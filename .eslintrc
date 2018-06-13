@@ -1,0 +1,42 @@
+{
+    "extends": [
+        "airbnb",
+        "plugin:import/errors"
+    ],
+    "parser": "babel-eslint",
+    "rules": {
+        "no-underscore-dangle": 0,
+        "import/extensions": "off",
+        "react/forbid-prop-types": "off",
+        "arrow-body-style": 0,
+        "react/prefer-stateless-function": 0,
+        "no-duplicate-imports": "off",
+        "import/no-duplicates": 2,
+        "import/prefer-default-export": 0,
+        "jsx-a11y/anchor-is-valid": 0,
+        "jsx-a11y/anchor-has-content": [ 2, {
+            "components": [ "Anchor" ]
+        }],
+        "jsx-a11y/click-events-have-key-events": 0,
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "jsx-quotes": [2, "prefer-single"],
+        "indent": [2, 4, {"SwitchCase": 1}],
+        "react/jsx-indent": [2, 4],
+        "react/sort-comp": [
+            1,
+            {
+                "order": [
+                    "type-annotations",
+                    "static-methods",
+                    "lifecycle",
+                    "everything-else",
+                    "render"
+                ]
+            }
+        ]
+    },
+    "env": {
+        "browser": true,
+        "node": true
+    }
+}

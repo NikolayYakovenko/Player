@@ -2,49 +2,79 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-export const TrackInfo = (props) => {
-    const tracks = [
-        {
-            name: 'first',
-            id: 1,
-        },
-        {
-            name: 'second',
-            id: 2,
-        },
-        {
-            name: 'third',
-            id: 3,
-        },
-        {
-            name: 'fourth',
-            id: 4,
-        },
-    ];
+import { SEARCH_URL } from '../../config/api';
 
-    const getTrack = () => {
-        const { pathname } = props.history.location;
-        const trackId = parseInt(pathname.charAt(pathname.length - 1), 10);
-        return trackId - 1;
+import './trackInfo.css';
+
+export class TrackInfo extends React.Component {
+    static propTypes = {
+        history: PropTypes.object.isRequired,
     };
 
-    return (
-        <div>
-            <div>
-                <Link to='' onClick={props.history.goBack}>Назад</Link>
-            </div>
-            <div>
-                logo
-            </div>
-            {tracks[getTrack()].name}
-            {tracks[getTrack()].id}
-            <button>Hello</button>
-        </div>
-    );
-};
+    state = {
+        track: {},
+    };
 
-TrackInfo.propTypes = {
-    // name: PropTypes.string.isRequired,
-    // trackId: PropTypes.number.isRequired,
-    history: PropTypes.object.isRequired,
-};
+    componentDidMount() {
+        window.scrollTo(0, 0);
+
+        this.loadTrack().then((response) => {
+            const { results } = response;
+            const { pathname } = this.props.history.location;
+
+            let trackId = pathname.split('/');
+            trackId = Number(trackId[trackId.length - 1]);
+
+            const trackData = results.filter((item) => {
+                return item.trackId === trackId;
+            });
+
+            this.setState({
+                track: trackData[0],
+            });
+        });
+    }
+
+    async loadTrack() {
+        const opt = {
+            method: 'GET',
+        };
+        const url = `${SEARCH_URL}?term=beatles&limit=25`;
+        try {
+            const request = await fetch(url, opt);
+            return request.json();
+        } catch (error) {
+            console.error(error);
+        }
+        return {};
+    }
+
+    render() {
+        const { track } = this.state;
+
+        return (
+            track ?
+                <div>
+                    <div className='backLink'>
+                        <Link to='' onClick={this.props.history.goBack}>Назад</Link>
+                    </div>
+                    <div className='trackLogo'>
+                        <img src={track.artworkUrl60} alt={track.trackName} />
+                    </div>
+                    <h2 className='trackName'>{track.trackName}</h2>
+                    <div className='details'>
+                        <p className='detailsLabel'>Artist:</p>
+                        <p className='detailsInfo'>{track.artistName}</p>
+                    </div>
+                    <div className='details'>
+                        <p className='detailsLabel'>Album:</p>
+                        <p className='detailsInfo'>{track.collectionName}</p>
+                    </div>
+                    <p><b>{track.trackPrice} {track.currency}</b></p>
+                    <button>But this track</button>
+                </div>
+                : null
+        );
+    }
+}
+

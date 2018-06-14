@@ -11,7 +11,7 @@ export const Track = (props) => {
         <li className='track'>
             <img
                 className='trackLogo'
-                src={trackInfo.artworkUrl30}
+                src={trackInfo.artworkUrl60}
                 alt={trackInfo.artistName}
             />
             <Link className='trackName' to={`view/${trackInfo.trackId}`}>

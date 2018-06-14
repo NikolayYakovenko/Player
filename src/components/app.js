@@ -8,6 +8,7 @@ import { TrackInfo } from './trackInfo/trackInfo';
 
 import '../styles/reset.css';
 import '../styles/base.css';
+import { Home } from './home/home';
 
 
 export const App = () => {
@@ -15,10 +16,12 @@ export const App = () => {
     // const BASE_URL = '/';
     return (
         <HashRouter>
-            <Switch>
-                <Route exact path='/' component={TrackList} />
-                <Route path='/view/:id' component={TrackInfo} />
-            </Switch>
+            <Home>
+                <Switch>
+                    <Route exact path='/' component={TrackList} />
+                    <Route path='/view/:id' component={TrackInfo} />
+                </Switch>
+            </Home>
         </HashRouter>
     );
 };

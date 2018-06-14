@@ -1,0 +1,30 @@
+.backLink {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.backLink:before {
+    content: '\2039';
+    display: inline-block;
+    margin-right: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.details {
+    margin: 10px 0;
+}
+
+.detailsLabel {
+    display: inline-block;
+    margin-right: 15px;
+    min-width: 50px;
+    vertical-align: top;
+    color: #7c8796;
+}
+
+.detailsInfo {
+    display: inline-block;
+    min-width: 50px;
+    vertical-align: top;
+}

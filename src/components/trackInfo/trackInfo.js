@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import { SEARCH_URL } from '../../config/api';
+import { getTrackDuration } from '../../helpers';
 
 import './trackInfo.css';
+
 
 export class TrackInfo extends React.Component {
     static propTypes = {
@@ -69,6 +71,12 @@ export class TrackInfo extends React.Component {
                     <div className='details'>
                         <p className='detailsLabel'>Album:</p>
                         <p className='detailsInfo'>{track.collectionName}</p>
+                    </div>
+                    <div className='details'>
+                        <p className='detailsLabel'>Duration:</p>
+                        <p className='detailsInfo'>
+                            {getTrackDuration(track.trackTimeMillis)}
+                        </p>
                     </div>
                     <p><b>{track.trackPrice} {track.currency}</b></p>
                     <button>But this track</button>

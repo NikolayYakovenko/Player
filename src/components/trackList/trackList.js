@@ -46,6 +46,10 @@ export class TrackList extends React.Component {
         return {};
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('keyup', event => this.makeSearch(event));
+    }
+
     makeSearch(event) {
         const { searchValue } = this.state;
         const searchNotEmpty = searchValue.length > 0;

@@ -1,6 +1,15 @@
 import React from 'react';
-import { Track } from '../track/track';
+
 import { SEARCH_URL } from '../../config/api';
+
+import { Track } from '../track/track';
+
+import { Input } from '../ui/input/input';
+import { Spinner } from '../ui/spinner/spinner';
+
+import './trackList.css';
+
+const ENTER = 13;
 
 
 export class TrackList extends React.Component {
@@ -9,31 +18,55 @@ export class TrackList extends React.Component {
         this.state = {
             tracks: [],
             count: '',
+            searchValue: '',
+            fetching: false,
         };
+
+        this.makeSearch = this.makeSearch.bind(this);
     }
 
     componentDidMount() {
-        this.loadTracks().then((response) => {
-            const { resultCount, results } = response;
-            this.setState({
-                tracks: results,
-                count: resultCount,
-            });
-        });
+        window.addEventListener('keyup', event => this.makeSearch(event));
     }
 
-    async loadTracks() {
+    async loadTracks(value) {
         const opt = {
             method: 'GET',
         };
-        const url = `${SEARCH_URL}?term=beatles&limit=25`;
+        const url = `${SEARCH_URL}?term=${value}&limit=25`;
         try {
+            this.setState({
+                fetching: true,
+            });
             const request = await fetch(url, opt);
             return request.json();
         } catch (error) {
             console.error(error);
         }
         return {};
+    }
+
+    makeSearch(event) {
+        const { searchValue } = this.state;
+        const searchNotEmpty = searchValue.length > 0;
+
+        if (event.keyCode === ENTER && searchNotEmpty) {
+            this.loadTracks(searchValue)
+                .then((response) => {
+                    const { resultCount, results } = response;
+                    this.setState({
+                        tracks: results,
+                        count: resultCount,
+                        fetching: false,
+                    });
+                });
+        }
+    }
+
+    onSearchValueChange(event) {
+        this.setState({
+            searchValue: event.target.value,
+        });
     }
 
     renderList() {
@@ -46,7 +79,7 @@ export class TrackList extends React.Component {
                     })}
                 </ul>
                 :
-                <div>Nothing was found.</div>
+                <div className='noResults'>Nothing was found</div>
         );
     }
 
@@ -61,7 +94,19 @@ export class TrackList extends React.Component {
                         : null
                     }
                 </h1>
-                {this.renderList()}
+                <Input
+                    className='searchFieldWrapper'
+                    value={this.state.searchValue}
+                    onChange={event => this.onSearchValueChange(event)}
+                    placeholder='Enter song or artist'
+                />
+                {this.state.fetching ?
+                    <div className='spinnerWrapper'>
+                        <Spinner />
+                    </div>
+                    :
+                    this.renderList()
+                }
             </React.Fragment>
         );
     }

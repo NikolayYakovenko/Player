@@ -18,13 +18,13 @@ export class TrackInfo extends React.Component {
     componentDidMount() {
         window.scrollTo(0, 0);
 
-        this.loadTrack().then((response) => {
+        const { pathname } = this.props.history.location;
+
+        let trackId = pathname.split('/');
+        trackId = Number(trackId[trackId.length - 1]);
+
+        this.loadTrack(trackId).then((response) => {
             const { results } = response;
-            const { pathname } = this.props.history.location;
-
-            let trackId = pathname.split('/');
-            trackId = Number(trackId[trackId.length - 1]);
-
             const trackData = results.filter((item) => {
                 return item.trackId === trackId;
             });
@@ -35,11 +35,11 @@ export class TrackInfo extends React.Component {
         });
     }
 
-    async loadTrack() {
+    async loadTrack(value) {
         const opt = {
             method: 'GET',
         };
-        const url = `${SEARCH_URL}?term=beatles&limit=25`;
+        const url = `${SEARCH_URL}?term=${value}&limit=25`;
         try {
             const request = await fetch(url, opt);
             return request.json();

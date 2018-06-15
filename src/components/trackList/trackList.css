@@ -1,0 +1,14 @@
+.noResults {
+    text-align: center;
+    font-size: 16px;
+    color: #7c8796;
+}
+
+.spinnerWrapper {
+    margin: 50px 0;
+    text-align: center;
+}
+
+.searchFieldWrapper {
+    margin-bottom: 30px;
+}

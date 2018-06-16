@@ -29,14 +29,17 @@ export const Track = (props) => {
                 <Link className='trackName' to={`view/${trackInfo.trackId}`}>
                     <h3>{trackInfo.trackName}</h3>
                 </Link>
-                <div className='artistName'>
+                <div className='trackDetails'>
                     {trackInfo.artistName}
                 </div>
-                <div className='artistName'>
-                    Album: {trackInfo.collectionName}
-                </div>
-                <div className='artistName'>
-                    Release date: {getReleaseDate(trackInfo.releaseDate)}
+                {trackInfo.collectionName ?
+                    <div className='trackDetails'>
+                        <b>Album</b>: {trackInfo.collectionName}
+                    </div>
+                    : null
+                }
+                <div className='trackDetails'>
+                    <b>Release date</b>: {getReleaseDate(trackInfo.releaseDate)}
                 </div>
             </div>
             <div className='itemSmall'>

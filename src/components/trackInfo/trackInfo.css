@@ -11,22 +11,12 @@
     font-weight: bold;
 }
 
-.details {
-    margin: 10px 0;
+.mainInfo {
+    margin-bottom: 10px;
 }
 
-.detailsLabel {
-    display: inline-block;
-    margin-right: 15px;
-    min-width: 50px;
-    vertical-align: top;
-    color: #7c8796;
-}
-
-.detailsInfo {
-    display: inline-block;
-    min-width: 50px;
-    vertical-align: top;
+.controlsWrapper {
+    margin: 24px 0 30px;
 }
 
 .controlButton {
@@ -36,6 +26,6 @@
 }
 
 .player {
+    margin-bottom: 30px;
     text-align: center;
-    margin-top: 30px;
 }

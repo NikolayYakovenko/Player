@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 
 import { getTrackDuration } from '../../helpers';
 
+import { Player } from '../player/player';
+
 import './trackInfo.css';
 
 
@@ -64,43 +66,50 @@ export class TrackInfo extends React.Component {
                     <div className='backLink'>
                         <Link to='' onClick={this.props.history.goBack}>Назад</Link>
                     </div>
-                    <div className='logoWrapper'>
-                        <img src={track.artworkUrl60} alt={track.trackName} />
+                    <div className='mainInfo'>
+                        <div className='logoWrapper'>
+                            <img
+                                className='trackLogo'
+                                src={track.artworkUrl60}
+                                alt={track.trackName}
+                            />
+                        </div>
+                        <h2 className='trackName'>{track.trackName}</h2>
                     </div>
-                    <h2 className='trackName'>{track.trackName}</h2>
-                    <div className='details'>
-                        <p className='detailsLabel'>Artist:</p>
-                        <p className='detailsInfo'>{track.artistName}</p>
+                    <div className='trackDetails'>
+                        <b>Artist: </b>
+                        {track.artistName}
                     </div>
-                    <div className='details'>
-                        <p className='detailsLabel'>Album:</p>
-                        <p className='detailsInfo'>{track.collectionName}</p>
+                    <div className='trackDetails'>
+                        <b>Album: </b>
+                        {track.collectionName}
                     </div>
-                    <div className='details'>
-                        <p className='detailsLabel'>Duration:</p>
-                        <p className='detailsInfo'>
-                            {getTrackDuration(track.trackTimeMillis)}
-                        </p>
+                    <div className='trackDetails'>
+                        <b>Duration: </b>
+                        {getTrackDuration(track.trackTimeMillis)}
                     </div>
-                    <div className='details'>
-                        <p className='detailsLabel'>Price:</p>
-                        <p className='detailsInfo'>
-                            <b>{track.trackPrice} </b>{track.currency}
-                        </p>
+                    <div className='trackDetails'>
+                        <b>Price: </b>
+                        <b>{track.trackPrice} </b>{track.currency}
                     </div>
-                    <button className='controlButton'>But this track</button>
-                    <button
-                        className='controlButton'
-                        onClick={() => this.playTrack(track.previewUrl)}
-                    >
-                        Play track
-                    </button>
+                    <div className='controlsWrapper'>
+                        <button className='controlButton'>
+                            But this track
+                        </button>
+                        <button
+                            className='controlButton'
+                            onClick={() => this.playTrack(track.previewUrl)}
+                        >
+                            Play track
+                        </button>
+                    </div>
                     <div className='player'>
                         <audio tabIndex='0' id='beep' controls preload='auto'>
                             <track kind='captions' />
                             <source src={track.previewUrl} />
                         </audio>
                     </div>
+                    <Player tracks={this.props.tracks} />
                 </div>
                 : null
         );

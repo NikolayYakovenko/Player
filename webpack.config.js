@@ -25,6 +25,10 @@ module.exports = {
                     'eslint-loader',
                 ],
             },
+            {
+                test: /\.svg$/,
+                loader: 'svg-sprite-loader',
+            },
         ],
     },
     plugins: [

@@ -1,3 +1,9 @@
+function formatTime(value) {
+    const result = (value < 10) ? `0${value}` : value;
+    return result;
+}
+
+
 export function getTrackDuration(time) {
     let sec = '00';
     let min = '00';
@@ -13,8 +19,11 @@ export function getTrackDuration(time) {
 
         hour /= 3600;
         min /= 60;
-    }
 
+        hour = formatTime(hour);
+        min = formatTime(min);
+        sec = formatTime(sec);
+    }
     return `${hour}:${min}:${sec}`;
 }
 

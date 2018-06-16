@@ -8,6 +8,7 @@
     border-bottom: 1px solid #d0d4dc;
 }
 .logoWrapper {
+    display: inline-block;
     min-width: 60px;
     margin-right: 15px;
 }

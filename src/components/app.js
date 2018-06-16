@@ -3,8 +3,8 @@ import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 // import createBrowserHistory from 'history/createBrowserHistory';
 
-import { TrackList } from './trackList/trackList';
-import { TrackInfo } from './trackInfo/trackInfo';
+import { TrackListContainer } from './trackList/trackListContainer';
+import { TrackInfoContainer } from './trackInfo/trackInfoContainer';
 
 import '../styles/reset.css';
 import '../styles/base.css';
@@ -18,8 +18,8 @@ export const App = () => {
         <HashRouter>
             <Home>
                 <Switch>
-                    <Route exact path='/' component={TrackList} />
-                    <Route path='/view/:id' component={TrackInfo} />
+                    <Route exact path='/' component={TrackListContainer} />
+                    <Route path='/view/:id' component={TrackInfoContainer} />
                 </Switch>
             </Home>
         </HashRouter>

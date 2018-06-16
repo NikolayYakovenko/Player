@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import { SEARCH_URL } from '../../config/api';
 import { getTrackDuration } from '../../helpers';
 
 import './trackInfo.css';
@@ -10,6 +9,7 @@ import './trackInfo.css';
 
 export class TrackInfo extends React.Component {
     static propTypes = {
+        tracks: PropTypes.array.isRequired,
         history: PropTypes.object.isRequired,
     };
 
@@ -25,31 +25,15 @@ export class TrackInfo extends React.Component {
         let trackId = pathname.split('/');
         trackId = Number(trackId[trackId.length - 1]);
 
-        this.loadTrack(trackId).then((response) => {
-            const { results } = response;
-            const trackData = results.filter((item) => {
-                return item.trackId === trackId;
-            });
+        const trackData = this.props.tracks.filter((item) => {
+            return item.trackId === trackId;
+        });
 
-            this.setState({
-                track: trackData[0],
-            });
+        this.setState({
+            track: trackData[0],
         });
     }
 
-    async loadTrack(value) {
-        const opt = {
-            method: 'GET',
-        };
-        const url = `${SEARCH_URL}?term=${value}&limit=25`;
-        try {
-            const request = await fetch(url, opt);
-            return request.json();
-        } catch (error) {
-            console.error(error);
-        }
-        return {};
-    }
 
     render() {
         const { track } = this.state;

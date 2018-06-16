@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { SEARCH_URL } from '../../config/api';
+import PropTypes from 'prop-types';
 
 import { Track } from '../track/track';
 
@@ -13,13 +12,17 @@ const ENTER = 13;
 
 
 export class TrackList extends React.Component {
+    static propTypes = {
+        loadTracks: PropTypes.func.isRequired,
+        tracks: PropTypes.array,
+        fetching: PropTypes.bool,
+        count: PropTypes.number,
+    }
+
     constructor(props) {
         super(props);
         this.state = {
-            tracks: [],
-            count: '',
             searchValue: '',
-            fetching: false,
         };
 
         this.makeSearch = this.makeSearch.bind(this);
@@ -27,23 +30,6 @@ export class TrackList extends React.Component {
 
     componentDidMount() {
         window.addEventListener('keyup', event => this.makeSearch(event));
-    }
-
-    async loadTracks(value) {
-        const opt = {
-            method: 'GET',
-        };
-        const url = `${SEARCH_URL}?term=${value}&limit=25`;
-        try {
-            this.setState({
-                fetching: true,
-            });
-            const request = await fetch(url, opt);
-            return request.json();
-        } catch (error) {
-            console.error(error);
-        }
-        return {};
     }
 
     componentWillUnmount() {
@@ -55,15 +41,7 @@ export class TrackList extends React.Component {
         const searchNotEmpty = searchValue.length > 0;
 
         if (event.keyCode === ENTER && searchNotEmpty) {
-            this.loadTracks(searchValue)
-                .then((response) => {
-                    const { resultCount, results } = response;
-                    this.setState({
-                        tracks: results,
-                        count: resultCount,
-                        fetching: false,
-                    });
-                });
+            this.props.loadTracks(searchValue);
         }
     }
 
@@ -74,7 +52,7 @@ export class TrackList extends React.Component {
     }
 
     renderList() {
-        const { tracks, count } = this.state;
+        const { tracks, count } = this.props;
         return (
             count ?
                 <ul>
@@ -88,7 +66,7 @@ export class TrackList extends React.Component {
     }
 
     render() {
-        const { count } = this.state;
+        const { count, fetching } = this.props;
         return (
             <React.Fragment>
                 <h1>
@@ -104,7 +82,7 @@ export class TrackList extends React.Component {
                     onChange={event => this.onSearchValueChange(event)}
                     placeholder='Enter song or artist'
                 />
-                {this.state.fetching ?
+                {fetching ?
                     <div className='spinnerWrapper'>
                         <Spinner />
                     </div>

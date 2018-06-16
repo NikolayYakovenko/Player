@@ -17,3 +17,20 @@ export function getTrackDuration(time) {
 
     return `${hour}:${min}:${sec}`;
 }
+
+
+export async function requestData(url) {
+    const opt = {
+        method: 'GET',
+    };
+
+    try {
+        const query = await fetch(url, opt);
+        if (query.status === 200) {
+            return query.json();
+        }
+    } catch (error) {
+        console.error(error);
+    }
+    return {};
+}

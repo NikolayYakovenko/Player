@@ -1,0 +1,31 @@
+.playerWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #d0d4dc;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.playerControl {
+    flex: 0 0 60px;
+    min-width: 60px;
+    color: #7c8796;
+    transition: color .1s linear;
+    cursor: pointer;
+}
+
+.playerControlSmall {
+    flex: 0 0 30px;
+    min-width: 30px;
+}
+
+.playerControl + .playerControl {
+    margin-left: 30px;
+}
+
+.playerControl:hover {
+    color: #ff5722
+}

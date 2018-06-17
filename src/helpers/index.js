@@ -43,3 +43,22 @@ export async function requestData(url) {
     }
     return {};
 }
+
+export function sortList(array, field, isSorted) {
+    if (field === 'primaryGenreName') {
+        array.sort((a, b) => {
+            if (isSorted) {
+                return a[field].localeCompare(b[field]);
+            }
+            return b[field].localeCompare(a[field]);
+        });
+    } else {
+        array.sort((a, b) => {
+            if (isSorted) {
+                return b[field] - a[field];
+            }
+            return a[field] - b[field];
+        });
+    }
+    return array;
+}

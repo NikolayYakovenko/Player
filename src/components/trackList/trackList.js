@@ -14,6 +14,7 @@ const ENTER = 13;
 export class TrackList extends React.Component {
     static propTypes = {
         loadTracks: PropTypes.func.isRequired,
+        makeSort: PropTypes.func.isRequired,
         tracks: PropTypes.array,
         fetching: PropTypes.bool,
         count: PropTypes.number,
@@ -52,10 +53,36 @@ export class TrackList extends React.Component {
     }
 
     renderList() {
-        const { tracks, count } = this.props;
+        const { tracks, count, makeSort } = this.props;
         return (
             count ?
                 <ul>
+                    <li className='listHeader' key='listHeader'>
+                        <div className='trackItem'>
+                            <b>Title</b>
+                        </div>
+                        <div
+                            className='itemSmall sortable'
+                            onClick={() => makeSort('primaryGenreName')}
+                            role='none'
+                        >
+                            <b>Genre</b>
+                        </div>
+                        <div
+                            className='itemSmall sortable'
+                            onClick={() => makeSort('trackTimeMillis')}
+                            role='none'
+                        >
+                            <b>Duration</b>
+                        </div>
+                        <div
+                            className='itemSmall sortable'
+                            onClick={() => makeSort('trackPrice')}
+                            role='none'
+                        >
+                            <b>Price</b>
+                        </div>
+                    </li>
                     {tracks.map((track) => {
                         return <Track key={track.trackId} trackInfo={track} />;
                     })}
@@ -67,6 +94,7 @@ export class TrackList extends React.Component {
 
     render() {
         const { count, fetching } = this.props;
+
         return (
             <React.Fragment>
                 <h1>

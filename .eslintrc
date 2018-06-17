@@ -5,6 +5,7 @@
     ],
     "parser": "babel-eslint",
     "rules": {
+        "no-case-declarations": 0,
         "no-underscore-dangle": 0,
         "import/extensions": "off",
         "react/forbid-prop-types": "off",

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { getTrackDuration } from '../../helpers';
 
-import { Player } from '../player/player';
+import { PlayerContainer } from '../player/playerContainer';
 
 import './trackInfo.css';
 
@@ -90,11 +90,21 @@ export class TrackInfo extends React.Component {
                     </div>
                     <div className='trackDetails'>
                         <b>Price: </b>
-                        <b>{track.trackPrice} </b>{track.currency}
+                        {track.trackPrice > 0 ?
+                            <span>
+                                <b>{track.trackPrice} </b>{track.currency}
+                            </span>
+                            :
+                            <span>Free</span>
+                        }
                     </div>
                     <div className='controlsWrapper'>
                         <button className='controlButton'>
-                            But this track
+                            {track.trackPrice > 0 ?
+                                <span>Buy this track</span>
+                                :
+                                <span>Add to favourite</span>
+                            }
                         </button>
                         <button
                             className='controlButton'
@@ -109,7 +119,7 @@ export class TrackInfo extends React.Component {
                             <source src={track.previewUrl} />
                         </audio>
                     </div>
-                    <Player tracks={this.props.tracks} />
+                    <PlayerContainer tracks={this.props.tracks} />
                 </div>
                 : null
         );

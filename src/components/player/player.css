@@ -9,23 +9,43 @@
     box-sizing: border-box;
 }
 
-.playerControl {
+.playerButton {
+    display: inline-block;
     flex: 0 0 60px;
-    min-width: 60px;
-    color: #7c8796;
-    transition: color .1s linear;
+    max-width: 60px;
+    border: none;
+    padding: 0;
+    outline: none;
+    background: none;
     cursor: pointer;
+    transition: transform .1s linear;
 }
 
-.playerControlSmall {
-    flex: 0 0 30px;
-    min-width: 30px;
+.playerButton:active {
+    transform: scale(0.95);
 }
 
-.playerControl + .playerControl {
+.playerButton:hover .playerControl {
+    color: #ff5722;
+}
+
+.playerButton + .playerButton {
     margin-left: 30px;
 }
 
-.playerControl:hover {
-    color: #ff5722
+.playerButtonSmall {
+    flex: 0 0 30px;
+    max-width: 30px;
+    padding: 15px 0;
 }
+
+.playerButtonSmall .playerControl {
+    width: 30px;
+}
+
+.playerControl {
+    width: 60px;
+    color: #7c8796;
+    transition: color .1s linear;
+}
+

@@ -12,3 +12,22 @@
 .searchFieldWrapper {
     margin-bottom: 30px;
 }
+
+.listHeader {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding-bottom: 3px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #d0d4dc;
+}
+
+.sortable {
+    transition: color .2s linear;
+    cursor: pointer;
+}
+
+.sortable:hover {
+    color: #7c8796
+}

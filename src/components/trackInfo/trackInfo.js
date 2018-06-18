@@ -113,13 +113,7 @@ export class TrackInfo extends React.Component {
                             Play track
                         </button>
                     </div>
-                    <div className='player'>
-                        <audio tabIndex='0' id='beep' controls preload='auto'>
-                            <track kind='captions' />
-                            <source src={track.previewUrl} />
-                        </audio>
-                    </div>
-                    <PlayerContainer tracks={this.props.tracks} />
+                    <PlayerContainer track={track} tracks={this.props.tracks} />
                 </div>
                 : null
         );

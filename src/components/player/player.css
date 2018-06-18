@@ -49,3 +49,6 @@
     transition: color .1s linear;
 }
 
+.buttonHidden {
+    display: none;
+}

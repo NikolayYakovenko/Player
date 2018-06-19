@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import cs from 'classnames';
+import { Howler } from 'howler';
 
 import { PlayerController } from './playerController';
 
@@ -22,7 +23,7 @@ export class Player extends React.Component {
         tracks: PropTypes.array,
         track: PropTypes.object,
         isPlaying: PropTypes.bool,
-    }
+    };
 
     componentDidMount() {
         const { tracks } = this.props;
@@ -30,7 +31,7 @@ export class Player extends React.Component {
 
         tracks.forEach((item) => {
             listOfTracks.push({
-                title: item.artistName,
+                title: item.trackName,
                 file: item.previewUrl,
                 howl: null,
                 id: item.trackId,
@@ -45,7 +46,7 @@ export class Player extends React.Component {
         });
 
         // Setup the new Howl.
-        const player = new PlayerController(listOfTracks);
+        this.player = new PlayerController(listOfTracks);
 
         const play = document.getElementById('playBtn');
         const pause = document.getElementById('pauseBtn');
@@ -53,10 +54,14 @@ export class Player extends React.Component {
         const next = document.getElementById('nextBtn');
 
         // Bind our player controls.
-        play.addEventListener('click', () => player.play(index));
-        pause.addEventListener('click', () => player.pause());
-        prev.addEventListener('click', () => player.skip('prev'));
-        next.addEventListener('click', () => player.skip('next'));
+        play.addEventListener('click', () => this.player.play(index));
+        pause.addEventListener('click', () => this.player.pause());
+        prev.addEventListener('click', () => this.player.skip('prev'));
+        next.addEventListener('click', () => this.player.skip('next'));
+    }
+
+    componentWillUnmount() {
+        Howler.unload();
     }
 
     playButton() {
@@ -106,44 +111,38 @@ export class Player extends React.Component {
     render() {
         return (
             <div className='playerWrapper'>
-                <button
-                    id='prevBtn'
-                    className='playerButton playerButtonSmall'
-                    onClick={() => this.props.changeTrack('prev')}
-                    type='button'
-                >
-                    <SvgIcon
-                        className='playerControl'
-                        glyph={prevIcon}
-                    />
-                </button>
-                {this.playButton()}
-                {this.pauseButton()}
-                <button
-                    id='nextBtn'
-                    className='playerButton playerButtonSmall'
-                    onClick={() => this.props.changeTrack('next')}
-                    type='button'
-                >
-                    <SvgIcon
-                        className='playerControl'
-                        glyph={nextIcon}
-                    />
-                </button>
-                <div>
-                    Timer:
-                    <b id='timer' />
-
-                    <br />
-                    Duration:
-                    <b id='duration' />
-
-                    <br />
-                    Track:
-                    <b id='track' />
+                <div className='trackInfoWrapper'>
+                    <p><b id='timer'>0:00</b></p>
+                    <p><b id='track' /></p>
+                    <p><b id='duration'>0:00</b></p>
+                </div>
+                <div className='player'>
+                    <button
+                        id='prevBtn'
+                        className='playerButton playerButtonSmall'
+                        onClick={() => this.props.changeTrack('prev')}
+                        type='button'
+                    >
+                        <SvgIcon
+                            className='playerControl'
+                            glyph={prevIcon}
+                        />
+                    </button>
+                    {this.playButton()}
+                    {this.pauseButton()}
+                    <button
+                        id='nextBtn'
+                        className='playerButton playerButtonSmall'
+                        onClick={() => this.props.changeTrack('next')}
+                        type='button'
+                    >
+                        <SvgIcon
+                            className='playerControl'
+                            glyph={nextIcon}
+                        />
+                    </button>
                 </div>
             </div>
         );
     }
 }
-

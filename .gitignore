@@ -1,3 +1,5 @@
 node_modules/*
 dist/main_bundle.js
+/dist/vendors_bundle.js
+/dist/*.js.map
 /.idea/

@@ -1,12 +1,15 @@
 .playerWrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
     padding: 15px;
     border: 1px solid #d0d4dc;
     border-radius: 10px;
     box-sizing: border-box;
+}
+
+.player {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 .playerButton {
@@ -51,4 +54,11 @@
 
 .buttonHidden {
     display: none;
+}
+
+.trackInfoWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
 }

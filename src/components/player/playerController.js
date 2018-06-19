@@ -5,6 +5,8 @@ import { Howl } from 'howler';
 export const PlayerController = function (playlist) {
     this.playlist = playlist;
     this.index = 0;
+
+    track.innerHTML = '1. ' + playlist[0].title;
 };
 
 PlayerController.prototype = {
@@ -31,7 +33,8 @@ PlayerController.prototype = {
                 preload: true,
                 onplay: function () {
                     console.log('onplay');
-
+                    requestAnimationFrame(self.step.bind(self));
+                    duration.innerHTML = self.formatTime(Math.round(sound.duration()));
                 },
                 onload: function () {
                     console.log('onload');
@@ -42,7 +45,6 @@ PlayerController.prototype = {
                 },
                 onpause: function () {
                     console.log('onpause');
-
                 },
                 onstop: function () {
                     console.log('onstop');
@@ -52,6 +54,9 @@ PlayerController.prototype = {
 
         // Begin playing the sound.
         sound.play();
+
+        // Update the track display.
+        track.innerHTML = (index + 1) + '. ' + data.title;
 
         // Keep track of the index we are currently playing.
         self.index = index;
@@ -109,6 +114,23 @@ PlayerController.prototype = {
 
         // Play the new track.
         self.play(index);
+    },
+
+    step: function () {
+        var self = this;
+
+        // Get the Howl we want to manipulate.
+        var sound = self.playlist[self.index].howl;
+
+        // Determine our current seek position.
+        var seek = sound.seek() || 0;
+        timer.innerHTML = self.formatTime(Math.round(seek));
+        // progress.style.width = (((seek / sound.duration()) * 100) || 0) + '%';
+
+        // If the sound is still playing, continue stepping.
+        if (sound.playing()) {
+            requestAnimationFrame(self.step.bind(self));
+        }
     },
 
     /**

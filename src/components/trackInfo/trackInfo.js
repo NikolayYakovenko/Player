@@ -43,18 +43,14 @@ export class TrackInfo extends React.Component {
         return track[0];
     }
 
-    async playTrack(url) {
-        try {
-            const audio = await new Audio(url);
-            audio.play();
+    // async playTrack(url) {
+    //     this.audio = await new Audio(url);
+    //     this.audio.play();
+    // }
 
-            setTimeout(() => {
-                audio.pause();
-            }, 2000);
-        } catch (error) {
-            console.error('error:', error);
-        }
-    }
+    // pauseBtn() {
+    //     this.audio.pause();
+    // }
 
     render() {
         const trackId = this.getTrackId();
@@ -105,12 +101,6 @@ export class TrackInfo extends React.Component {
                                 :
                                 <span>Add to favourite</span>
                             }
-                        </button>
-                        <button
-                            className='controlButton'
-                            onClick={() => this.playTrack(track.previewUrl)}
-                        >
-                            Play track
                         </button>
                     </div>
                     <PlayerContainer track={track} tracks={this.props.tracks} />

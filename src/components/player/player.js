@@ -25,7 +25,27 @@ export class Player extends React.Component {
         isPlaying: PropTypes.bool,
     };
 
+    state = {
+        currentTrack: '',
+    };
+
+    componentWillMount() {
+        this.playlist = this.createPlaylist();
+        const index = this.getSelectedTrackId(this.playlist);
+        this.setState({
+            currentTrack: index,
+        });
+    }
+
     componentDidMount() {
+        this.player = new PlayerController(this.playlist);
+    }
+
+    componentWillUnmount() {
+        Howler.unload();
+    }
+
+    createPlaylist() {
         const { tracks } = this.props;
         const listOfTracks = [];
 
@@ -38,36 +58,27 @@ export class Player extends React.Component {
             });
         });
 
+        return listOfTracks;
+    }
+
+    getSelectedTrackId(tracks) {
         let index = 0;
-        listOfTracks.forEach((item, i) => {
+        tracks.forEach((item, i) => {
             if (item.id === this.props.track.trackId) {
                 index = i;
             }
         });
 
-        // Setup the new Howl.
-        this.player = new PlayerController(listOfTracks);
-
-        const play = document.getElementById('playBtn');
-        const pause = document.getElementById('pauseBtn');
-        const prev = document.getElementById('prevBtn');
-        const next = document.getElementById('nextBtn');
-
-        // Bind our player controls.
-        play.addEventListener('click', () => this.player.play(index));
-        pause.addEventListener('click', () => this.player.pause());
-        prev.addEventListener('click', () => this.player.skip('prev'));
-        next.addEventListener('click', () => this.player.skip('next'));
-    }
-
-    componentWillUnmount() {
-        Howler.unload();
+        return index;
     }
 
     playButton() {
         const icon = playIcon;
-        const action = this.props.playTrack;
         const btnId = 'playBtn';
+        const action = () => {
+            this.props.playTrack();
+            this.player.play(this.state.currentTrack);
+        };
 
         return (
             <button
@@ -88,8 +99,11 @@ export class Player extends React.Component {
 
     pauseButton() {
         const icon = pauseIcon;
-        const action = this.props.pauseTrack;
         const btnId = 'pauseBtn';
+        const action = () => {
+            this.props.pauseTrack();
+            this.player.pause();
+        };
 
         return (
             <button
@@ -108,39 +122,82 @@ export class Player extends React.Component {
         );
     }
 
+    prevButton() {
+        const { currentTrack } = this.state;
+        const lastTrack = this.playlist.length - 1;
+        const index = (currentTrack === 0) ? lastTrack : currentTrack - 1;
+
+        const action = () => {
+            this.setState({
+                currentTrack: index,
+            });
+            this.props.changeTrack('prev');
+            this.player.skip('prev');
+        };
+
+        return (
+            <button
+                id='prevBtn'
+                className='playerButton playerButtonSmall'
+                onClick={action}
+                type='button'
+            >
+                <SvgIcon
+                    className='playerControl'
+                    glyph={prevIcon}
+                />
+            </button>
+        );
+    }
+
+    nextButton() {
+        const { currentTrack } = this.state;
+        const lastTrack = this.playlist.length - 1;
+        const index = (currentTrack === lastTrack) ? 0 : currentTrack + 1;
+
+        const action = () => {
+            this.setState({
+                currentTrack: index,
+            });
+            this.props.changeTrack('next');
+            this.player.skip('next');
+        };
+
+        return (
+            <button
+                id='prevBtn'
+                className='playerButton playerButtonSmall'
+                onClick={action}
+                type='button'
+            >
+                <SvgIcon
+                    className='playerControl'
+                    glyph={nextIcon}
+                />
+            </button>
+        );
+    }
+
     render() {
+        const { currentTrack } = this.state;
+        const { title } = this.playlist[currentTrack];
+
         return (
             <div className='playerWrapper'>
                 <div className='trackInfoWrapper'>
                     <p><b id='timer'>0:00</b></p>
-                    <p><b id='track' /></p>
+                    <p className='trackInfoName' title={title}>
+                        <b id='track'>
+                            {`${currentTrack + 1}. ${title}`}
+                        </b>
+                    </p>
                     <p><b id='duration'>0:00</b></p>
                 </div>
                 <div className='player'>
-                    <button
-                        id='prevBtn'
-                        className='playerButton playerButtonSmall'
-                        onClick={() => this.props.changeTrack('prev')}
-                        type='button'
-                    >
-                        <SvgIcon
-                            className='playerControl'
-                            glyph={prevIcon}
-                        />
-                    </button>
+                    {this.prevButton()}
                     {this.playButton()}
                     {this.pauseButton()}
-                    <button
-                        id='nextBtn'
-                        className='playerButton playerButtonSmall'
-                        onClick={() => this.props.changeTrack('next')}
-                        type='button'
-                    >
-                        <SvgIcon
-                            className='playerControl'
-                            glyph={nextIcon}
-                        />
-                    </button>
+                    {this.nextButton()}
                 </div>
             </div>
         );

@@ -62,3 +62,10 @@
     justify-content: space-between;
     margin-bottom: 10px;
 }
+
+.trackInfoName {
+    max-width: 430px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

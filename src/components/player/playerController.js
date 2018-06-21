@@ -6,7 +6,7 @@ export const PlayerController = function (playlist) {
     this.playlist = playlist;
     this.index = 0;
 
-    track.innerHTML = '1. ' + playlist[0].title;
+    // track.innerHTML = '1. ' + playlist[0].title;
 };
 
 PlayerController.prototype = {

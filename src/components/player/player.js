@@ -11,6 +11,7 @@ import pauseIcon from './svg/pauseIcon.svg';
 import playIcon from './svg/playIcon.svg';
 import prevIcon from './svg/prevIcon.svg';
 import nextIcon from './svg/nextIcon.svg';
+import volumeIcon from './svg/volumeIcon.svg';
 
 import './player.css';
 
@@ -39,6 +40,41 @@ export class Player extends React.Component {
 
     componentDidMount() {
         this.player = new PlayerController(this.playlist);
+
+        const barEmpty = document.getElementById('barEmpty');
+        const sliderBtn = document.getElementById('sliderBtn');
+        const volume = document.getElementById('volume');
+
+        barEmpty.addEventListener('click', (event) => {
+            const per = event.layerX / parseFloat(barEmpty.scrollWidth);
+            this.player.volume(per);
+        });
+        sliderBtn.addEventListener('mousedown', () => {
+            window.sliderDown = true;
+        });
+        volume.addEventListener('mouseup', () => {
+            window.sliderDown = false;
+        });
+        volume.addEventListener('touchend', () => {
+            window.sliderDown = false;
+        });
+
+        const move = (event) => {
+            if (window.sliderDown) {
+                const x = event.clientX || event.touches[0].clientX;
+
+                const { left } = barEmpty.getBoundingClientRect();
+                const { right } = barEmpty.getBoundingClientRect();
+                const abs = right - left;
+                const layerX = x - left;
+
+                let per = layerX / abs;
+                per = Math.min(1, per);
+                this.player.volume(per);
+            }
+        };
+        volume.addEventListener('mousemove', move);
+        volume.addEventListener('touchmove', move);
     }
 
     componentWillUnmount() {
@@ -178,6 +214,21 @@ export class Player extends React.Component {
         );
     }
 
+    volumeButton() {
+        return (
+            <button
+                className='playerButton playerButtonSmall'
+                onClick={() => this.player.toggleVolume()}
+                type='button'
+            >
+                <SvgIcon
+                    className='playerControl'
+                    glyph={volumeIcon}
+                />
+            </button>
+        );
+    }
+
     render() {
         const { currentTrack } = this.state;
         const { title } = this.playlist[currentTrack];
@@ -198,6 +249,13 @@ export class Player extends React.Component {
                     {this.playButton()}
                     {this.pauseButton()}
                     {this.nextButton()}
+                </div>
+                {this.volumeButton()}
+                <div id='volume' className='fadeout'>
+                    <div id='barFull' className='bar'>
+                        <button id='sliderBtn' />
+                    </div>
+                    <div id='barEmpty' className='bar' />
                 </div>
             </div>
         );

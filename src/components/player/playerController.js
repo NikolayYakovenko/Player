@@ -133,6 +133,30 @@ PlayerController.prototype = {
         }
     },
 
+    volume: function (val) {
+        var self = this;
+
+        // Update the global volume (affecting all Howls).
+        Howler.volume(val);
+
+        // Update the display on the slider.
+
+        var barWidth = Number(val.toFixed(3));
+        barFull.style.width = (barWidth * 100) + '%';
+
+        // sliderBtn.style.left = (window.innerWidth * barWidth + window.innerWidth * 0.05 - 25) + 'px';
+    },
+
+    toggleVolume: function () {
+        var self = this;
+        var display = (volume.style.display === 'block') ? 'none' : 'block';
+
+        setTimeout(function () {
+            volume.style.display = display;
+        }, (display === 'block') ? 0 : 300);
+        volume.className = (display === 'block') ? 'fadein' : 'fadeout';
+    },
+
     /**
      * Format the time from seconds to M:SS.
      * @param  {Number} secs Seconds to format.

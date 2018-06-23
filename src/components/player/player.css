@@ -1,4 +1,5 @@
 .playerWrapper {
+    position: relative;
     padding: 15px;
     border: 1px solid #d0d4dc;
     border-radius: 10px;
@@ -68,4 +69,76 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+
+
+
+/* Volume */
+#volume {
+    display: none;
+    position: absolute;
+    left: 60px;
+    bottom: 20px;
+    width: 75%;
+    height: 50px;
+    box-sizing: border-box;
+}
+
+.bar {
+    position: absolute;
+    top: 50%;
+    margin-top: -5px;
+    width: 100%;
+    height: 10px;
+    background-color: rgba(255, 87, 34, 1);
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.33);
+    border-radius: 3px;
+}
+
+#barEmpty {
+    width: 100%;
+    background-color: rgba(208, 212, 220, 1);;
+    box-shadow: none;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+#barFull {
+    width: 100%;
+}
+
+#sliderBtn {
+    position: absolute;
+    z-index: 5;
+    top: 50%;
+    right: -15px;
+    width: 30px;
+    height: 30px;
+    margin-top: -15px;
+    background-color: #7c8796;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.33);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    outline: none;
+}
+
+#sliderBtn:active {
+    transform: scale(0.95);
+}
+
+/* Fade-In */
+.fadeout {
+    animation: fadeout .3s;
+}
+
+.fadein {
+    animation: fadein .3s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }

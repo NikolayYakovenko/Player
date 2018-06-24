@@ -13,6 +13,7 @@ module.exports = (env, argv) => {
             filename: '[name]_bundle.js',
             path: path.resolve(__dirname, 'dist'),
             chunkFilename: '[name]_bundle.js',
+            publicPath: '/',
         },
         module: {
             rules: [
@@ -39,7 +40,7 @@ module.exports = (env, argv) => {
         },
         plugins: [
             new HtmlWebpackPlugin({
-                template: './src/index.html',
+                template: path.resolve(__dirname, 'src', 'index.html'),
                 inject: 'body',
                 filename: 'index.html',
             }),

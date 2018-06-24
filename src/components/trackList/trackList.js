@@ -8,7 +8,7 @@ import { Spinner } from '../ui/spinner/spinner';
 
 import './trackList.css';
 
-const ENTER = 13;
+const ENTER_KEY = 13;
 
 
 export class TrackList extends React.Component {
@@ -30,18 +30,19 @@ export class TrackList extends React.Component {
     }
 
     componentDidMount() {
-        window.addEventListener('keyup', event => this.makeSearch(event));
+        this.searchInput.addEventListener('keyup', event => this.makeSearch(event));
+        this.searchInput.focus();
     }
 
     componentWillUnmount() {
-        window.removeEventListener('keyup', event => this.makeSearch(event));
+        this.searchInput.removeEventListener('keyup', event => this.makeSearch(event));
     }
 
     makeSearch(event) {
         const { searchValue } = this.state;
         const searchNotEmpty = searchValue.length > 0;
 
-        if (event.keyCode === ENTER && searchNotEmpty) {
+        if (event.keyCode === ENTER_KEY && searchNotEmpty) {
             this.props.loadTracks(searchValue);
         }
     }
@@ -105,6 +106,7 @@ export class TrackList extends React.Component {
                     }
                 </h1>
                 <Input
+                    refFn={(input) => { this.searchInput = input; }}
                     className='searchFieldWrapper'
                     value={this.state.searchValue}
                     onChange={event => this.onSearchValueChange(event)}

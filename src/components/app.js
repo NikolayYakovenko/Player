@@ -1,27 +1,26 @@
 import React from 'react';
-// import { Router } from 'react-router';
-import { HashRouter, Route, Switch } from 'react-router-dom';
-// import createBrowserHistory from 'history/createBrowserHistory';
-
-import { TrackListContainer } from './trackList/trackListContainer';
-import { TrackInfoContainer } from './trackInfo/trackInfoContainer';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import '../styles/reset.css';
 import '../styles/base.css';
+
 import { Home } from './home/home';
+import { TrackListContainer } from './trackList/trackListContainer';
+import { TrackInfoContainer } from './trackInfo/trackInfoContainer';
+
+import { NotFoundRoute } from './ui/notFoundRoute/notFoundRoute';
 
 
 export const App = () => {
-    // const history = createBrowserHistory();
-    // const BASE_URL = '/';
     return (
-        <HashRouter>
+        <BrowserRouter >
             <Home>
                 <Switch>
-                    <Route exact path='/' component={TrackListContainer} />
-                    <Route path='/view/:id' component={TrackInfoContainer} />
+                    <Route path='/' exact component={TrackListContainer} />
+                    <Route path='/view/:id' exact component={TrackInfoContainer} />
+                    <Route component={NotFoundRoute} />
                 </Switch>
             </Home>
-        </HashRouter>
+        </BrowserRouter>
     );
 };

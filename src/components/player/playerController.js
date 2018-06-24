@@ -32,23 +32,22 @@ PlayerController.prototype = {
                 html5: true,
                 preload: true,
                 onplay: function () {
-                    console.log('onplay');
                     requestAnimationFrame(self.step.bind(self));
                     duration.innerHTML = self.formatTime(Math.round(sound.duration()));
                 },
-                onload: function () {
-                    console.log('onload');
-                },
-                onend: function () {
-                    console.log('onend');
-                    self.skip('next');
-                },
-                onpause: function () {
-                    console.log('onpause');
-                },
-                onstop: function () {
-                    console.log('onstop');
-                }
+                // onload: function () {
+                //     console.log('onload');
+                // },
+                // onend: function () {
+                //     console.log('onend');
+                //     self.skip('next');
+                // },
+                // onpause: function () {
+                //     console.log('onpause');
+                // },
+                // onstop: function () {
+                //     console.log('onstop');
+                // }
             });
         }
 
@@ -125,7 +124,6 @@ PlayerController.prototype = {
         // Determine our current seek position.
         var seek = sound.seek() || 0;
         timer.innerHTML = self.formatTime(Math.round(seek));
-        // progress.style.width = (((seek / sound.duration()) * 100) || 0) + '%';
 
         // If the sound is still playing, continue stepping.
         if (sound.playing()) {
@@ -143,8 +141,6 @@ PlayerController.prototype = {
 
         var barWidth = Number(val.toFixed(3));
         barFull.style.width = (barWidth * 100) + '%';
-
-        // sliderBtn.style.left = (window.innerWidth * barWidth + window.innerWidth * 0.05 - 25) + 'px';
     },
 
     toggleVolume: function () {
@@ -157,7 +153,7 @@ PlayerController.prototype = {
         volume.className = (display === 'block') ? 'fadein' : 'fadeout';
     },
 
-    /**
+    /*
      * Format the time from seconds to M:SS.
      * @param  {Number} secs Seconds to format.
      * @return {String}      Formatted time.

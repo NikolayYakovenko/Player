@@ -11,6 +11,7 @@ export const Input = (props, ...restProps) => {
         <input
             className={classes}
             type='text'
+            ref={props.refFn}
             onChange={props.onChange}
             placeholder={props.placeholder}
             {...restProps}
@@ -26,6 +27,7 @@ Input.defaultProps = {
 
 Input.propTypes = {
     onChange: PropTypes.func,
+    refFn: PropTypes.func,
     className: PropTypes.string,
     placeholder: PropTypes.string,
 };

@@ -1,0 +1,10 @@
+.shareButton {
+    display: inline-block;
+    min-width: 73px;
+    height: 28px;
+    vertical-align: top;
+}
+
+.shareButton + .shareButton {
+    margin-left: 30px;
+}

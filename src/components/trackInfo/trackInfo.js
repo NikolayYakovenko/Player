@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { getTrackDuration } from '../../helpers';
 
 import { PlayerContainer } from '../player/playerContainer';
+import { TwitterShare } from '../ui/shareButtons/twitterShare';
+import { FacebookShare } from '../ui/shareButtons/facebookShare';
 
 import './trackInfo.css';
 
@@ -42,15 +44,6 @@ export class TrackInfo extends React.Component {
 
         return track[0];
     }
-
-    // async playTrack(url) {
-    //     this.audio = await new Audio(url);
-    //     this.audio.play();
-    // }
-
-    // pauseBtn() {
-    //     this.audio.pause();
-    // }
 
     render() {
         const trackId = this.getTrackId();
@@ -94,6 +87,14 @@ export class TrackInfo extends React.Component {
                             <span>Free</span>
                         }
                     </div>
+                    <TwitterShare
+                        text={`${track.artistName}: ${track.trackName} `}
+                        hashtags={`${track.artistName},theBestMusicPlayer`}
+                    />
+                    {/* won't work with localhost */}
+                    <FacebookShare
+                        url='{window.location.href}'
+                    />
                     <div className='controlsWrapper'>
                         <button className='controlButton'>
                             {track.trackPrice > 0 ?
@@ -104,6 +105,7 @@ export class TrackInfo extends React.Component {
                         </button>
                     </div>
                     <PlayerContainer track={track} tracks={this.props.tracks} />
+                    <div id='fb-root' />
                 </div>
                 : null
         );

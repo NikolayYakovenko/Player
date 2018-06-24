@@ -41,21 +41,21 @@ export class Player extends React.Component {
     componentDidMount() {
         this.player = new PlayerController(this.playlist);
 
-        const barEmpty = document.getElementById('barEmpty');
-        const sliderBtn = document.getElementById('sliderBtn');
-        const volume = document.getElementById('volume');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeControl = document.getElementById('volumeControl');
+        const volumeBarEmpty = document.getElementById('volumeBarEmpty');
 
-        barEmpty.addEventListener('click', (event) => {
-            const per = event.layerX / parseFloat(barEmpty.scrollWidth);
+        volumeBarEmpty.addEventListener('click', (event) => {
+            const per = event.layerX / parseFloat(volumeBarEmpty.scrollWidth);
             this.player.volume(per);
         });
-        sliderBtn.addEventListener('mousedown', () => {
+        volumeSlider.addEventListener('mousedown', () => {
             window.sliderDown = true;
         });
-        volume.addEventListener('mouseup', () => {
+        volumeControl.addEventListener('mouseup', () => {
             window.sliderDown = false;
         });
-        volume.addEventListener('touchend', () => {
+        volumeControl.addEventListener('touchend', () => {
             window.sliderDown = false;
         });
 
@@ -63,8 +63,8 @@ export class Player extends React.Component {
             if (window.sliderDown) {
                 const x = event.clientX || event.touches[0].clientX;
 
-                const { left } = barEmpty.getBoundingClientRect();
-                const { right } = barEmpty.getBoundingClientRect();
+                const { left } = volumeBarEmpty.getBoundingClientRect();
+                const { right } = volumeBarEmpty.getBoundingClientRect();
                 const abs = right - left;
                 const layerX = x - left;
 
@@ -73,8 +73,8 @@ export class Player extends React.Component {
                 this.player.volume(per);
             }
         };
-        volume.addEventListener('mousemove', move);
-        volume.addEventListener('touchmove', move);
+        volumeControl.addEventListener('mousemove', move);
+        volumeControl.addEventListener('touchmove', move);
     }
 
     componentWillUnmount() {
@@ -251,11 +251,11 @@ export class Player extends React.Component {
                     {this.nextButton()}
                 </div>
                 {this.volumeButton()}
-                <div id='volume' className='fadeout'>
-                    <div id='barFull' className='bar'>
-                        <button id='sliderBtn' />
+                <div id='volumeControl' className='volumeControl volumeFadeout'>
+                    <div id='volumeBarFull' className='volumeBar volumeBarFull'>
+                        <button id='volumeSlider' className='volumeSlider' />
                     </div>
-                    <div id='barEmpty' className='bar' />
+                    <div id='volumeBarEmpty' className='volumeBar volumeBarEmpty' />
                 </div>
             </div>
         );

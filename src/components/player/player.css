@@ -72,10 +72,8 @@
 }
 
 
-
-
 /* Volume */
-#volume {
+.volumeControl {
     display: none;
     position: absolute;
     left: 60px;
@@ -85,7 +83,7 @@
     box-sizing: border-box;
 }
 
-.bar {
+.volumeBar {
     position: absolute;
     top: 50%;
     margin-top: -5px;
@@ -96,7 +94,7 @@
     border-radius: 3px;
 }
 
-#barEmpty {
+.volumeBarEmpty {
     width: 100%;
     background-color: rgba(208, 212, 220, 1);;
     box-shadow: none;
@@ -104,11 +102,11 @@
     opacity: 0.5;
 }
 
-#barFull {
+.volumeBarFull {
     width: 100%;
 }
 
-#sliderBtn {
+.volumeSlider {
     position: absolute;
     z-index: 5;
     top: 50%;
@@ -125,20 +123,24 @@
     outline: none;
 }
 
-#sliderBtn:active {
+.volumeSlider:active {
     transform: scale(0.95);
 }
 
-/* Fade-In */
-.fadeout {
+.volumeFadeout {
     animation: fadeout .3s;
 }
 
-.fadein {
+.volumeFadein {
     animation: fadein .3s;
 }
 
 @keyframes fadein {
     from { opacity: 0; }
-    to   { opacity: 1; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeout {
+    from { opacity: 1; }
+    to { opacity: 0; }
 }

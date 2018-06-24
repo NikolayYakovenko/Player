@@ -139,18 +139,25 @@ PlayerController.prototype = {
 
         // Update the display on the slider.
 
-        var barWidth = Number(val.toFixed(3));
-        barFull.style.width = (barWidth * 100) + '%';
+        var volumeBarWidth = Number(val.toFixed(3));
+        volumeBarFull.style.width = (volumeBarWidth * 100) + '%';
     },
 
     toggleVolume: function () {
-        var self = this;
-        var display = (volume.style.display === 'block') ? 'none' : 'block';
+        var display = (volumeControl.style.display === 'block') ? 'none' : 'block';
+        var isVisible = (display === 'block');
 
         setTimeout(function () {
-            volume.style.display = display;
-        }, (display === 'block') ? 0 : 300);
-        volume.className = (display === 'block') ? 'fadein' : 'fadeout';
+            volumeControl.style.display = display;
+        }, isVisible ? 0 : 300);
+
+        if (isVisible) {
+            volumeControl.classList.add('volumeFadein');
+            volumeControl.classList.remove('volumeFadeout');
+        } else {
+            volumeControl.classList.remove('volumeFadein');
+            volumeControl.classList.add('volumeFadeout');
+        }
     },
 
     /*

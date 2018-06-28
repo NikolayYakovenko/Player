@@ -23,7 +23,8 @@ export class FacebookShare extends React.Component {
 
         if (d.getElementById(id)) return;
 
-        js = d.createElement(s); js.id = id;
+        js = d.createElement(s);
+        js.id = id;
         js.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v3.0';
         fjs.parentNode.insertBefore(js, fjs);
     }

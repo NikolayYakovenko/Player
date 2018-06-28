@@ -66,7 +66,6 @@ PlayerController.prototype = {
      */
     pause: function () {
         var self = this;
-        console.log('pause');
 
         // Get the Howl we want to manipulate.
         var sound = self.playlist[self.index].howl;
@@ -121,14 +120,14 @@ PlayerController.prototype = {
         // Get the Howl we want to manipulate.
         var sound = self.playlist[self.index].howl;
 
-        // Determine our current seek position.
-        var seek = sound.seek() || 0;
-        timer.innerHTML = self.formatTime(Math.round(seek));
+        if (sound && sound.playing()) {
+            // Determine our current seek position.
+            var seek = sound.seek() || 0;
+            timer.innerHTML = self.formatTime(Math.round(seek));
 
-        // If the sound is still playing, continue stepping.
-        if (sound.playing()) {
             requestAnimationFrame(self.step.bind(self));
         }
+
     },
 
     volume: function (val) {
@@ -157,6 +156,17 @@ PlayerController.prototype = {
         } else {
             volumeControl.classList.remove('volumeFadein');
             volumeControl.classList.add('volumeFadeout');
+        }
+    },
+
+    hideVolume: function () {
+        if (volumeControl.style.display === 'block') {
+            setTimeout(function () {
+                volumeControl.style.display = 'none';
+            }, 300);
+
+            volumeControl.classList.add('volumeFadein');
+            volumeControl.classList.remove('volumeFadeout');
         }
     },
 

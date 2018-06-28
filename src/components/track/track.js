@@ -30,7 +30,7 @@ export const Track = (props) => {
                     <h3>{trackInfo.trackName}</h3>
                 </Link>
                 <div className='trackDetails'>
-                    {trackInfo.artistName}
+                    <b>Artist</b>: {trackInfo.artistName}
                 </div>
                 {trackInfo.collectionName ?
                     <div className='trackDetails'>

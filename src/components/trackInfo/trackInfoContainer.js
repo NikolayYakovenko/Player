@@ -9,6 +9,7 @@ import { TrackInfo } from './trackInfo';
 function mapStateToProps(state) {
     return {
         tracks: state.list.tracks,
+        fetching: state.list.fetching,
     };
 }
 

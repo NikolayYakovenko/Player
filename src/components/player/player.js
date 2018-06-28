@@ -42,7 +42,7 @@ export class Player extends React.Component {
         this.player = new PlayerController(this.playlist);
 
         const volumeSlider = document.getElementById('volumeSlider');
-        const volumeControl = document.getElementById('volumeControl');
+        this.volumeControl = document.getElementById('volumeControl');
         const volumeBarEmpty = document.getElementById('volumeBarEmpty');
 
         volumeBarEmpty.addEventListener('click', (event) => {
@@ -52,10 +52,10 @@ export class Player extends React.Component {
         volumeSlider.addEventListener('mousedown', () => {
             window.sliderDown = true;
         });
-        volumeControl.addEventListener('mouseup', () => {
+        this.volumeControl.addEventListener('mouseup', () => {
             window.sliderDown = false;
         });
-        volumeControl.addEventListener('touchend', () => {
+        this.volumeControl.addEventListener('touchend', () => {
             window.sliderDown = false;
         });
 
@@ -73,12 +73,30 @@ export class Player extends React.Component {
                 this.player.volume(per);
             }
         };
-        volumeControl.addEventListener('mousemove', move);
-        volumeControl.addEventListener('touchmove', move);
+        this.volumeControl.addEventListener('mousemove', move);
+        this.volumeControl.addEventListener('touchmove', move);
+
+        document.addEventListener('click', (event) => {
+            this.hideVolumeButtonOnOutsideClick(event);
+        });
     }
 
     componentWillUnmount() {
+        document.removeEventListener('click', (event) => {
+            this.hideVolumeButtonOnOutsideClick(event);
+        });
+
+        this.props.pauseTrack();
         Howler.unload();
+    }
+
+    hideVolumeButtonOnOutsideClick(event) {
+        if (this.volBtn &&
+            !this.volBtn.contains(event.target) &&
+            !this.volumeControl.contains(event.target)
+        ) {
+            this.player.hideVolume();
+        }
     }
 
     createPlaylist() {
@@ -220,6 +238,7 @@ export class Player extends React.Component {
                 className='playerButton playerButtonSmall'
                 onClick={() => this.player.toggleVolume()}
                 type='button'
+                ref={(button) => { this.volBtn = button; }}
             >
                 <SvgIcon
                     className='playerControl'

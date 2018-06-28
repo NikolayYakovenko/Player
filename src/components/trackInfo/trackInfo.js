@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { getTrackDuration } from '../../helpers';
 
 import { PlayerContainer } from '../player/playerContainer';
+
+import { Spinner } from '../ui/spinner/spinner';
 import { TwitterShare } from '../ui/shareButtons/twitterShare';
 import { FacebookShare } from '../ui/shareButtons/facebookShare';
 
@@ -14,8 +16,9 @@ import './trackInfo.css';
 export class TrackInfo extends React.Component {
     static propTypes = {
         loadTracks: PropTypes.func,
+        fetching: PropTypes.bool.isRequired,
         tracks: PropTypes.array.isRequired,
-        history: PropTypes.object.isRequired,
+        match: PropTypes.object,
     };
 
     componentDidMount() {
@@ -30,12 +33,7 @@ export class TrackInfo extends React.Component {
     }
 
     getTrackId() {
-        const { pathname } = this.props.history.location;
-
-        let trackId = pathname.split('/');
-        trackId = Number(trackId[trackId.length - 1]);
-
-        return trackId;
+        return Number(this.props.match.params.id);
     }
 
     getTrackById(id) {
@@ -45,15 +43,15 @@ export class TrackInfo extends React.Component {
         return track[0];
     }
 
-    render() {
+    renderTrackInfo() {
         const trackId = this.getTrackId();
         const track = this.getTrackById(trackId);
 
         return (
             track ?
-                <div>
+                <React.Fragment>
                     <div className='backLink'>
-                        <Link to='' onClick={this.props.history.goBack}>Назад</Link>
+                        <Link to='/'>Back to the search</Link>
                     </div>
                     <div className='mainInfo'>
                         <div className='logoWrapper'>
@@ -91,10 +89,12 @@ export class TrackInfo extends React.Component {
                         text={`${track.artistName}: ${track.trackName} `}
                         hashtags={`${track.artistName},theBestMusicPlayer`}
                     />
+
                     {/* won't work with localhost */}
                     <FacebookShare
                         url='{window.location.href}'
                     />
+
                     <div className='controlsWrapper'>
                         <button className='controlButton'>
                             {track.trackPrice > 0 ?
@@ -106,8 +106,33 @@ export class TrackInfo extends React.Component {
                     </div>
                     <PlayerContainer track={track} tracks={this.props.tracks} />
                     <div id='fb-root' />
+                </React.Fragment>
+                :
+                this.noTrackFound()
+        );
+    }
+
+    noTrackFound() {
+        return (
+            <React.Fragment>
+                <h3>
+                    There is no track with id <b>{this.props.match.params.id}</b>
+                </h3>
+                <Link to='/'>
+                    Go to the main page
+                </Link>
+            </React.Fragment>
+        );
+    }
+
+    render() {
+        return (
+            this.props.fetching ?
+                <div className='spinnerWrapper'>
+                    <Spinner />
                 </div>
-                : null
+                :
+                this.renderTrackInfo()
         );
     }
 }

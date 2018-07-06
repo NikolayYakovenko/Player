@@ -7,6 +7,7 @@ import '../styles/base.css';
 import { Home } from './home/home';
 import { TrackListContainer } from './trackList/trackListContainer';
 import { TrackInfoContainer } from './trackInfo/trackInfoContainer';
+import { FavListContainer } from './favList/favListContainer';
 
 import { NotFoundRoute } from './ui/notFoundRoute/notFoundRoute';
 
@@ -17,6 +18,7 @@ export const App = () => {
             <Home>
                 <Switch>
                     <Route path='/' exact component={TrackListContainer} />
+                    <Route path='/fav' exact component={FavListContainer} />
                     <Route path='/view/:id' exact component={TrackInfoContainer} />
                     <Route component={NotFoundRoute} />
                 </Switch>

@@ -11,6 +11,9 @@ export const TRACK_PLAY = 'TRACK_PLAY';
 export const TRACK_PAUSE = 'TRACK_PAUSE';
 export const TRACK_CHANGE = 'TRACK_CHANGE';
 
+export const ADD_TO_FAVOURITES = 'ADD_TO_FAVOURITES';
+export const REMOVE_FROM_FAVOURITES = 'REMOVE_FROM_FAVOURITES';
+
 
 export const loadTracks = value => async (dispatch) => {
     const url = `${SEARCH_URL}?term=${value}&limit=10`;
@@ -28,7 +31,7 @@ export const loadTracks = value => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: LOAD_TRACKS_ERROR,
-            data: error,
+            data: 'Can\'t load tracks; Fetch error',
         });
     }
 };
@@ -61,10 +64,27 @@ export const changeTrack = (direction) => {
     };
 };
 
+
+export const addToFavourites = (track) => {
+    return {
+        type: ADD_TO_FAVOURITES,
+        track,
+    };
+};
+
+export const removeFromFavourites = (track) => {
+    return {
+        type: REMOVE_FROM_FAVOURITES,
+        track,
+    };
+};
+
 export const playerActions = {
     loadTracks,
     playTrack,
     pauseTrack,
     changeTrack,
     makeSort,
+    addToFavourites,
+    removeFromFavourites,
 };

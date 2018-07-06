@@ -5,6 +5,7 @@ import { Track } from '../track/track';
 
 import { Input } from '../ui/input/input';
 import { Spinner } from '../ui/spinner/spinner';
+import { Navigation } from '../ui/navigation/navigation';
 
 import './trackList.css';
 
@@ -94,17 +95,11 @@ export class TrackList extends React.Component {
     }
 
     render() {
-        const { count, fetching } = this.props;
+        const { fetching } = this.props;
 
         return (
             <React.Fragment>
-                <h1>
-                    Here is our track list
-                    {count ?
-                        <span>&nbsp;({count})</span>
-                        : null
-                    }
-                </h1>
+                <Navigation />
                 <Input
                     refFn={(input) => { this.searchInput = input; }}
                     className='searchFieldWrapper'

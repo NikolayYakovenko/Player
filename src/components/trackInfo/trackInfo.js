@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { getTrackDuration } from '../../helpers';
 
 import { PlayerContainer } from '../player/playerContainer';
+import { AddToFavouritesContainer } from '../addToFavourites/addToFavouritesContainer';
 
 import { Spinner } from '../ui/spinner/spinner';
 import { TwitterShare } from '../ui/shareButtons/twitterShare';
@@ -18,6 +19,7 @@ export class TrackInfo extends React.Component {
         loadTracks: PropTypes.func,
         fetching: PropTypes.bool.isRequired,
         tracks: PropTypes.array.isRequired,
+        errorMessage: PropTypes.string,
         match: PropTypes.object,
     };
 
@@ -26,8 +28,9 @@ export class TrackInfo extends React.Component {
 
         const { tracks } = this.props;
         const trackId = this.getTrackId();
+        const track = this.getTrackById(trackId);
 
-        if (!tracks.length) {
+        if (!track || !tracks.length) {
             this.props.loadTracks(trackId);
         }
     }
@@ -38,9 +41,13 @@ export class TrackInfo extends React.Component {
 
     getTrackById(id) {
         const { tracks } = this.props;
-        const track = tracks.filter(item => item.trackId === id);
 
-        return track[0];
+        if (tracks && tracks.length) {
+            const track = tracks.filter(item => item.trackId === id);
+            return track[0];
+        }
+
+        return null;
     }
 
     renderTrackInfo() {
@@ -103,6 +110,7 @@ export class TrackInfo extends React.Component {
                                 <span>Add to favourite</span>
                             }
                         </button>
+                        <AddToFavouritesContainer track={track} />
                     </div>
                     <PlayerContainer track={track} tracks={this.props.tracks} />
                     <div id='fb-root' />
@@ -126,13 +134,19 @@ export class TrackInfo extends React.Component {
     }
 
     render() {
-        return (
-            this.props.fetching ?
+        if (this.props.fetching) {
+            return (
                 <div className='spinnerWrapper'>
                     <Spinner />
                 </div>
-                :
-                this.renderTrackInfo()
+            );
+        } else if (this.props.errorMessage) {
+            return (
+                this.props.errorMessage
+            );
+        }
+        return (
+            this.renderTrackInfo()
         );
     }
 }

@@ -8,6 +8,8 @@ import {
     TRACK_PLAY,
     TRACK_PAUSE,
     TRACK_CHANGE,
+    ADD_TO_FAVOURITES,
+    REMOVE_FROM_FAVOURITES,
 } from '../actions';
 
 
@@ -16,6 +18,12 @@ const DEFAULT_STATE = {
     tracks: [],
     count: 0,
     isSorted: false,
+};
+
+
+const DEFAULT_FAVOURITES_STATE = {
+    favourites: [],
+    active: [],
 };
 
 const listReducer = (state = DEFAULT_STATE, action) => {
@@ -89,9 +97,41 @@ const playerReducer = (state = DEFAULT_STATE, action) => {
     }
 };
 
+const favouritesReducer = (state = DEFAULT_FAVOURITES_STATE, action) => {
+    switch (action.type) {
+        case ADD_TO_FAVOURITES:
+            return {
+                favourites: [
+                    ...state.favourites,
+                    action.track,
+                ],
+                active: [
+                    ...state.active,
+                    action.track.trackId,
+                ],
+            };
+        case REMOVE_FROM_FAVOURITES:
+            const { trackId } = action.track;
+            const activeList = state.active.slice();
+            const favList = state.favourites.slice();
+            const trackIndex = activeList.indexOf(trackId);
+
+            favList.splice(trackIndex, 1);
+            activeList.splice(trackIndex, 1);
+
+            return {
+                ...state,
+                favourites: favList,
+                active: activeList,
+            };
+        default:
+            return state;
+    }
+};
 
 export const playerReducers = {
     list: listReducer,
     // track: trackReducer,
     player: playerReducer,
+    favouritesList: favouritesReducer,
 };

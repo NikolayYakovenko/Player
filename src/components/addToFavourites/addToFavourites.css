@@ -1,0 +1,28 @@
+.favouriteButton {
+    display: inline-block;
+    border: none;
+    padding: 0;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    transition: all .1s linear;
+}
+
+.favouriteButton:active {
+    transform: scale(0.95);
+}
+
+.favouriteIcon {
+    width: 30px;
+    color: #7c8796;
+    transition: color .1s linear;
+}
+
+.favouriteButton:hover .favouriteIcon {
+    color: #ff5722;
+}
+
+.favouriteIconActive {
+    color: #ff5722;
+}
+

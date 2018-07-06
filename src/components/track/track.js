@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 
 import { getTrackDuration } from '../../helpers';
 
+import { AddToFavouritesContainer } from '../addToFavourites/addToFavouritesContainer';
+
 import './track.css';
 
 
@@ -24,6 +26,9 @@ export const Track = (props) => {
                     src={trackInfo.artworkUrl60}
                     alt={trackInfo.artistName}
                 />
+                <div>
+                    <AddToFavouritesContainer track={trackInfo} showOnHover />
+                </div>
             </div>
             <div className='trackItem'>
                 <Link className='trackName' to={`view/${trackInfo.trackId}`}>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { playerActions } from '../../actions';
 
-import { Player } from './player';
+import { ReactPlayer } from './reactPlayer';
 
 
 function mapStateToProps(state, ownProps) {
@@ -17,4 +17,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators(playerActions, dispatch);
 }
 
-export const PlayerContainer = connect(mapStateToProps, mapDispatchToProps)(Player);
+export const PlayerContainer = connect(mapStateToProps, mapDispatchToProps)(ReactPlayer);

@@ -1,137 +1,120 @@
-import { sortList } from '../helpers/index';
-
 import {
-    LOAD_TRACKS_START,
-    LOAD_TRACKS_SUCCESS,
-    LOAD_TRACKS_ERROR,
-    TRACKS_SORT,
     TRACK_PLAY,
     TRACK_PAUSE,
-    TRACK_CHANGE,
-    ADD_TO_FAVOURITES,
-    REMOVE_FROM_FAVOURITES,
+    CREATE_PLAYLIST,
+    UPDATE_CURRENT_TRACK,
+    CHANGE_VOLUME_VALUE,
+    RUN_TRACK,
 } from '../actions';
 
 
 const DEFAULT_STATE = {
-    fetching: false,
-    tracks: [],
-    count: 0,
-    isSorted: false,
+    playlist: [], // array of tracks for player
+    volumeValue: 1, // global volume value; from 0 to 1
+    isPlaying: false, // temporary; will be deleted in the feature
+    selectedTrackId: null, // the id of selected track;
+    // used to display info about track in player
+    currentTrack: {
+        index: 0,
+        id: '',
+        title: '',
+    },
 };
-
-
-const DEFAULT_FAVOURITES_STATE = {
-    favourites: [],
-    active: [],
-};
-
-const listReducer = (state = DEFAULT_STATE, action) => {
-    switch (action.type) {
-        case LOAD_TRACKS_START:
-            return {
-                ...state,
-                fetching: true,
-            };
-        case LOAD_TRACKS_SUCCESS:
-            return {
-                ...state,
-                fetching: false,
-                tracks: action.data.results,
-                count: action.data.resultCount,
-            };
-        case LOAD_TRACKS_ERROR:
-            return {
-                ...state,
-                fetching: false,
-                errorMessage: action.data,
-            };
-        case TRACKS_SORT:
-            const { field } = action;
-            let sortableList = [].concat(state.tracks);
-            sortableList = sortList(sortableList, field, state.isSorted);
-
-            return {
-                ...state,
-                tracks: sortableList,
-                isSorted: !state.isSorted,
-            };
-        default:
-            return state;
-    }
-};
-
-// const trackReducer = (state = DEFAULT_STATE, action) => {
-//     switch (action.type) {
-//         case TRACK_PLAY:
-//             return {
-//                 ...state,
-//                 track: action.data.results,
-//             };
-//         default:
-//             return state;
-//     }
-// };
 
 
 const playerReducer = (state = DEFAULT_STATE, action) => {
     switch (action.type) {
+        // TODO: Merge with RUN_TRACK
         case TRACK_PLAY:
             return {
                 ...state,
                 isPlaying: true,
             };
         case TRACK_PAUSE:
+            const playlist = state.playlist.map((track) => {
+                if (track.id === action.trackId) {
+                    return {
+                        ...track,
+                        isPlaying: false,
+                    };
+                }
+                return track;
+            });
+
             return {
                 ...state,
                 isPlaying: false,
+                playlist,
             };
-        case TRACK_CHANGE:
+        case CREATE_PLAYLIST:
+            const { tracks } = action;
+            const listOfTracks = [];
+
+            tracks.forEach((track) => {
+                listOfTracks.push({
+                    title: track.trackName,
+                    file: track.previewUrl,
+                    howl: null,
+                    id: track.trackId,
+                    isPlaying: false,
+                });
+            });
+
             return {
                 ...state,
-                isPlaying: true,
-                direction: action.direction,
+                playlist: listOfTracks,
+            };
+        case UPDATE_CURRENT_TRACK:
+            const { trackId } = action;
+            let currentTrack = {};
+
+            state.playlist.forEach((track, index) => {
+                if (track.id === trackId) {
+                    currentTrack = {
+                        index,
+                        id: trackId,
+                        title: track.title,
+                    };
+                }
+            });
+            return {
+                ...state,
+                currentTrack,
+            };
+        case CHANGE_VOLUME_VALUE:
+            return {
+                ...state,
+                volumeValue: action.value,
+            };
+        case RUN_TRACK:
+            const list = state.playlist.map((track) => {
+                if (track.id === action.trackId) {
+                    // update isPlaying property for new track
+                    return {
+                        ...track,
+                        isPlaying: true,
+                    };
+                } else if (track.id === state.currentTrack.id) {
+                    // update isPlaying property for previous track
+                    return {
+                        ...track,
+                        isPlaying: false,
+                    };
+                }
+                return track;
+            });
+
+            return {
+                ...state,
+                selectedTrackId: action.trackId,
+                playlist: list,
             };
         default:
             return state;
     }
 };
 
-const favouritesReducer = (state = DEFAULT_FAVOURITES_STATE, action) => {
-    switch (action.type) {
-        case ADD_TO_FAVOURITES:
-            return {
-                favourites: [
-                    ...state.favourites,
-                    action.track,
-                ],
-                active: [
-                    ...state.active,
-                    action.track.trackId,
-                ],
-            };
-        case REMOVE_FROM_FAVOURITES:
-            const { trackId } = action.track;
-            const activeList = state.active.slice();
-            const favList = state.favourites.slice();
-            const trackIndex = activeList.indexOf(trackId);
-
-            favList.splice(trackIndex, 1);
-            activeList.splice(trackIndex, 1);
-
-            return {
-                ...state,
-                favourites: favList,
-                active: activeList,
-            };
-        default:
-            return state;
-    }
-};
 
 export const playerReducers = {
-    list: listReducer,
-    // track: trackReducer,
     player: playerReducer,
-    favouritesList: favouritesReducer,
 };

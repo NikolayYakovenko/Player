@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 
 import { getTrackDuration } from '../../helpers';
 
-import { PlayerContainer } from '../player/playerContainer';
 import { AddToFavouritesContainer } from '../addToFavourites/addToFavouritesContainer';
+import { PlayButtonContainer } from '../playButton/playButtonContainer';
 
 import { Spinner } from '../ui/spinner/spinner';
 import { TwitterShare } from '../ui/shareButtons/twitterShare';
@@ -17,6 +17,7 @@ import './trackInfo.css';
 export class TrackInfo extends React.Component {
     static propTypes = {
         loadTracks: PropTypes.func,
+        updateCurrentTrack: PropTypes.func,
         fetching: PropTypes.bool.isRequired,
         tracks: PropTypes.array.isRequired,
         errorMessage: PropTypes.string,
@@ -26,12 +27,18 @@ export class TrackInfo extends React.Component {
     componentDidMount() {
         window.scrollTo(0, 0);
 
-        const { tracks } = this.props;
+        const { tracks, loadTracks, updateCurrentTrack } = this.props;
         const trackId = this.getTrackId();
         const track = this.getTrackById(trackId);
 
         if (!track || !tracks.length) {
-            this.props.loadTracks(trackId);
+            const promise = loadTracks(trackId);
+            // update info about current track after tracks has loaded
+            promise
+                .then(
+                    () => updateCurrentTrack(trackId),
+                    (error) => { throw new Error(error); },
+                );
         }
     }
 
@@ -103,16 +110,19 @@ export class TrackInfo extends React.Component {
                     />
 
                     <div className='controlsWrapper'>
-                        <button className='controlButton'>
-                            {track.trackPrice > 0 ?
-                                <span>Buy this track</span>
-                                :
-                                <span>Add to favourite</span>
-                            }
-                        </button>
-                        <AddToFavouritesContainer track={track} />
+                        {track.trackPrice > 0 &&
+                            <button className='controlButton buyTrackButton'>
+                                Buy this track
+                            </button>
+                        }
+                        <div className='controlButton'>
+                            <AddToFavouritesContainer track={track} />
+                        </div>
+                        <div className='controlButton'>
+                            <PlayButtonContainer id={track.trackId} />
+                        </div>
                     </div>
-                    <PlayerContainer track={track} tracks={this.props.tracks} />
+
                     <div id='fb-root' />
                 </React.Fragment>
                 :

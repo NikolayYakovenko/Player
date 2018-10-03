@@ -8,6 +8,7 @@ import { Home } from './home/home';
 import { TrackListContainer } from './trackList/trackListContainer';
 import { TrackInfoContainer } from './trackInfo/trackInfoContainer';
 import { FavListContainer } from './favList/favListContainer';
+import { PlayerContainer } from './player/playerContainer';
 
 import { NotFoundRoute } from './ui/notFoundRoute/notFoundRoute';
 
@@ -16,6 +17,7 @@ export const App = () => {
     return (
         <BrowserRouter >
             <Home>
+                <PlayerContainer />
                 <Switch>
                     <Route path='/' exact component={TrackListContainer} />
                     <Route path='/fav' exact component={FavListContainer} />

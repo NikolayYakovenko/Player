@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 
 import { playerActions } from '../../actions';
 
-import { ReactPlayer } from './reactPlayer';
+import { PlayButton } from './playButton';
 
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     return {
-        tracks: state.list.tracks,
+        id: ownProps.id,
         ...state.player,
     };
 }
@@ -17,4 +17,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators(playerActions, dispatch);
 }
 
-export const PlayerContainer = connect(mapStateToProps, mapDispatchToProps)(ReactPlayer);
+export const PlayButtonContainer = connect(mapStateToProps, mapDispatchToProps)(PlayButton);

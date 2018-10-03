@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { getTrackDuration } from '../../helpers';
 
 import { AddToFavouritesContainer } from '../addToFavourites/addToFavouritesContainer';
+import { PlayButtonContainer } from '../playButton/playButtonContainer';
 
 import './track.css';
 
@@ -28,6 +29,9 @@ export const Track = (props) => {
                 />
                 <div>
                     <AddToFavouritesContainer track={trackInfo} showOnHover />
+                </div>
+                <div>
+                    <PlayButtonContainer id={trackInfo.trackId} />
                 </div>
             </div>
             <div className='trackItem'>

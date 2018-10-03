@@ -1,3 +1,5 @@
+import { Howler } from 'howler';
+
 import { SEARCH_URL } from '../config/api';
 import { requestData } from '../helpers';
 
@@ -9,11 +11,22 @@ export const TRACKS_SORT = 'TRACKS_SORT';
 
 export const TRACK_PLAY = 'TRACK_PLAY';
 export const TRACK_PAUSE = 'TRACK_PAUSE';
-export const TRACK_CHANGE = 'TRACK_CHANGE';
 
 export const ADD_TO_FAVOURITES = 'ADD_TO_FAVOURITES';
 export const REMOVE_FROM_FAVOURITES = 'REMOVE_FROM_FAVOURITES';
 
+export const CREATE_PLAYLIST = 'CREATE_PLAYLIST';
+export const UPDATE_CURRENT_TRACK = 'UPDATE_CURRENT_TRACK';
+export const CHANGE_VOLUME_VALUE = 'CHANGE_VOLUME_VALUE';
+export const RUN_TRACK = 'RUN_TRACK';
+
+
+export const createPlaylist = (tracks) => {
+    return {
+        type: CREATE_PLAYLIST,
+        tracks,
+    };
+};
 
 export const loadTracks = value => async (dispatch) => {
     const url = `${SEARCH_URL}?term=${value}&limit=10`;
@@ -22,12 +35,17 @@ export const loadTracks = value => async (dispatch) => {
         type: LOAD_TRACKS_START,
     });
 
+    // destroy Howler object when user search another songs
+    if (Howler._howls.length) Howler.unload();
+
     try {
         const request = await requestData(url);
         dispatch({
             type: LOAD_TRACKS_SUCCESS,
             data: request,
         });
+
+        dispatch(createPlaylist(request.results));
     } catch (error) {
         dispatch({
             type: LOAD_TRACKS_ERROR,
@@ -43,27 +61,18 @@ export const makeSort = (field) => {
     };
 };
 
-export const playTrack = () =>
-    (dispatch) => {
-        dispatch({
-            type: TRACK_PLAY,
-        });
+export const playTrack = () => {
+    return {
+        type: TRACK_PLAY,
     };
+};
 
-export const pauseTrack = () => {
+export const pauseTrack = (trackId) => {
     return {
         type: TRACK_PAUSE,
+        trackId,
     };
 };
-
-
-export const changeTrack = (direction) => {
-    return {
-        type: TRACK_CHANGE,
-        direction,
-    };
-};
-
 
 export const addToFavourites = (track) => {
     return {
@@ -79,12 +88,38 @@ export const removeFromFavourites = (track) => {
     };
 };
 
+export const updateCurrentTrack = (trackId) => {
+    return {
+        type: UPDATE_CURRENT_TRACK,
+        trackId,
+    };
+};
+
+
+export const changeVolume = (value) => {
+    return {
+        type: CHANGE_VOLUME_VALUE,
+        value,
+    };
+};
+
+export const runTrack = (trackId) => {
+    return {
+        type: RUN_TRACK,
+        trackId,
+    };
+};
+
+
 export const playerActions = {
     loadTracks,
     playTrack,
     pauseTrack,
-    changeTrack,
     makeSort,
     addToFavourites,
     removeFromFavourites,
+    createPlaylist,
+    updateCurrentTrack,
+    changeVolume,
+    runTrack,
 };

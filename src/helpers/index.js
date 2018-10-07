@@ -39,7 +39,7 @@ export async function requestData(url) {
             return query.json();
         }
     } catch (error) {
-        console.error(error);
+        throw new Error(error);
     }
     return {};
 }

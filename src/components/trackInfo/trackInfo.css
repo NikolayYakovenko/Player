@@ -20,7 +20,12 @@
 }
 
 .controlButton {
-    width: 150px;
+    display: inline-block;
     margin-right: 30px;
+    vertical-align: middle;
+}
+
+.buyTrackButton {
     padding: 10px;
+    width: 150px;
 }

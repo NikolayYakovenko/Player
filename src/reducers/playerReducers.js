@@ -1,5 +1,4 @@
 import {
-    TRACK_PLAY,
     TRACK_PAUSE,
     CREATE_PLAYLIST,
     UPDATE_CURRENT_TRACK,
@@ -16,7 +15,7 @@ const DEFAULT_STATE = {
     // used to display info about track in player
     currentTrack: {
         index: 0,
-        id: '',
+        id: null,
         title: '',
     },
 };
@@ -24,12 +23,6 @@ const DEFAULT_STATE = {
 
 const playerReducer = (state = DEFAULT_STATE, action) => {
     switch (action.type) {
-        // TODO: Merge with RUN_TRACK
-        case TRACK_PLAY:
-            return {
-                ...state,
-                isPlaying: true,
-            };
         case TRACK_PAUSE:
             const playlist = state.playlist.map((track) => {
                 if (track.id === action.trackId) {
@@ -87,14 +80,16 @@ const playerReducer = (state = DEFAULT_STATE, action) => {
                 volumeValue: action.value,
             };
         case RUN_TRACK:
+            const newTrackId = action.trackId;
             const list = state.playlist.map((track) => {
-                if (track.id === action.trackId) {
+                if (track.id === newTrackId) {
                     // update isPlaying property for new track
                     return {
                         ...track,
                         isPlaying: true,
+
                     };
-                } else if (track.id === state.currentTrack.id) {
+                } else if (track.isPlaying) {
                     // update isPlaying property for previous track
                     return {
                         ...track,
@@ -106,8 +101,9 @@ const playerReducer = (state = DEFAULT_STATE, action) => {
 
             return {
                 ...state,
-                selectedTrackId: action.trackId,
+                selectedTrackId: newTrackId,
                 playlist: list,
+                isPlaying: true,
             };
         default:
             return state;

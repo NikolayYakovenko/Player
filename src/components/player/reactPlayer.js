@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Howl, Howler } from 'howler';
 import cs from 'classnames';
 
+import { PlayButtonContainer } from '../playButton/playButtonContainer';
+
 import { SvgIcon } from '../ui/svgIcon/svgIcon';
 
-import pauseIcon from './svg/pauseIcon.svg';
-import playIcon from './svg/playIcon.svg';
 import prevIcon from './svg/prevIcon.svg';
 import nextIcon from './svg/nextIcon.svg';
 import volumeIcon from './svg/volumeIcon.svg';
@@ -16,9 +16,9 @@ import './player.css';
 
 export class ReactPlayer extends React.Component {
     static propTypes = {
-        playTrack: PropTypes.func,
         pauseTrack: PropTypes.func,
         updateCurrentTrack: PropTypes.func,
+        runTrack: PropTypes.func,
         changeVolume: PropTypes.func,
         playlist: PropTypes.array,
         volumeValue: PropTypes.number,
@@ -74,7 +74,13 @@ export class ReactPlayer extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { playlist, selectedTrackId, currentTrack } = this.props;
+        const {
+            playlist,
+            selectedTrackId,
+            currentTrack,
+            volumeValue,
+            isPlaying,
+        } = this.props;
 
         // check if user want to play a new track
         if (prevProps.selectedTrackId !== selectedTrackId) {
@@ -88,10 +94,23 @@ export class ReactPlayer extends React.Component {
 
             // play new track
             this.play(newIndex);
+        } else if (
+            // check if user want to play the same track when pressed pause before
+            prevProps.isPlaying !== isPlaying &&
+            prevProps.selectedTrackId === selectedTrackId &&
+            selectedTrackId !== null
+        ) {
+            const selected = playlist.find(track => track.id === selectedTrackId);
+
+            if (selected.isPlaying) {
+                this.play(currentTrack.index);
+            } else {
+                this.pause();
+            }
         }
 
-        if (prevProps.volumeValue !== this.props.volumeValue) {
-            Howler.volume(this.props.volumeValue);
+        if (prevProps.volumeValue !== volumeValue) {
+            Howler.volume(volumeValue);
         }
     }
 
@@ -116,10 +135,8 @@ export class ReactPlayer extends React.Component {
     play(trackIndex) {
         let sound;
         const self = this;
-        const { playlist, playTrack, updateCurrentTrack } = this.props;
+        const { playlist } = this.props;
         const data = playlist[trackIndex];
-
-        updateCurrentTrack(data.id);
 
         // If we already loaded this track, use the current one.
         // Otherwise, setup and load a new Howl.
@@ -146,18 +163,16 @@ export class ReactPlayer extends React.Component {
 
         // Begin playing the sound.
         sound.play();
-        playTrack();
     }
 
     pause() {
-        const { playlist, pauseTrack, currentTrack: { index } } = this.props;
+        const { playlist, currentTrack: { index } } = this.props;
 
         // Get the Howl we want to manipulate.
         const sound = playlist[index].howl;
 
-        // Puase the sound.
+        // Pause the sound.
         sound.pause();
-        pauseTrack();
     }
 
     /**
@@ -189,15 +204,21 @@ export class ReactPlayer extends React.Component {
      * @param  {Number} newIndex Index in the playlist.
      */
     skipTo(newIndex) {
-        const { playlist, currentTrack: { index } } = this.props;
+        const {
+            playlist,
+            runTrack,
+            updateCurrentTrack,
+            currentTrack: { index },
+        } = this.props;
 
-        // Stop the current track.
+        // Stop current track.
         if (playlist[index].howl) {
             playlist[index].howl.stop();
         }
 
-        // Play the new track.
-        this.play(newIndex);
+        // Play a new track.
+        updateCurrentTrack(playlist[newIndex].id);
+        runTrack(playlist[newIndex].id);
     }
 
     step() {
@@ -273,45 +294,6 @@ export class ReactPlayer extends React.Component {
 
     noTracksLoaded() {
         return this.props.playlist.length === 0;
-    }
-
-    playButton() {
-        const { isPlaying, currentTrack: { index } } = this.props;
-
-        return (
-            <button
-                className={cs('playerButton', {
-                    buttonHidden: isPlaying,
-                })}
-                disabled={this.noTracksLoaded()}
-                onClick={() => this.play(index)}
-                type='button'
-            >
-                <SvgIcon
-                    className='playerControl'
-                    glyph={playIcon}
-                />
-            </button>
-        );
-    }
-
-    pauseButton() {
-        const { isPlaying } = this.props;
-
-        return (
-            <button
-                className={cs('playerButton', {
-                    buttonHidden: !isPlaying,
-                })}
-                onClick={() => this.pause()}
-                type='button'
-            >
-                <SvgIcon
-                    className='playerControl'
-                    glyph={pauseIcon}
-                />
-            </button>
-        );
     }
 
     prevButton() {
@@ -394,8 +376,18 @@ export class ReactPlayer extends React.Component {
     render() {
         const {
             volumeValue,
-            currentTrack: { title, index },
+            playlist,
+            currentTrack: { title, index, id },
         } = this.props;
+        let trackId = id;
+
+        // When user press play button for the first time
+        // currentTrack is empty and trackId is null.
+        // Therefore we take the first track from playlist.
+        if (!trackId && playlist.length) {
+            trackId = playlist[0].id;
+        }
+
         const barWidth = `${Math.round(volumeValue * 100)}%`;
 
         return (
@@ -416,8 +408,10 @@ export class ReactPlayer extends React.Component {
                 </div>
                 <div className='player'>
                     {this.prevButton()}
-                    {this.playButton()}
-                    {this.pauseButton()}
+                    <PlayButtonContainer
+                        id={trackId}
+                        disabled={this.noTracksLoaded()}
+                    />
                     {this.nextButton()}
                 </div>
                 <div className='volumeWrapper'>

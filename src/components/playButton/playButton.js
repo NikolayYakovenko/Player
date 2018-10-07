@@ -12,21 +12,19 @@ export const PlayButton = (props) => {
         id,
         runTrack,
         playlist,
-        playTrack,
         pauseTrack,
         updateCurrentTrack,
+        disabled,
     } = props;
     const selected = playlist.find(track => track.id === id);
     const isPlaying = selected && selected.isPlaying;
 
     const buttonAction = () => {
         if (isPlaying) {
-            selected.howl.pause();
             pauseTrack(id);
         } else {
-            runTrack(id);
             updateCurrentTrack(id);
-            playTrack(id);
+            runTrack(id);
         }
     };
 
@@ -35,6 +33,7 @@ export const PlayButton = (props) => {
             id={id}
             className='playerButton playerButtonSmall'
             onClick={buttonAction}
+            disabled={disabled}
             type='button'
         >
             <SvgIcon
@@ -46,10 +45,10 @@ export const PlayButton = (props) => {
 };
 
 PlayButton.propTypes = {
-    playTrack: PropTypes.func,
     pauseTrack: PropTypes.func,
     runTrack: PropTypes.func,
     updateCurrentTrack: PropTypes.func,
     id: PropTypes.number,
     playlist: PropTypes.array,
+    disabled: PropTypes.bool,
 };

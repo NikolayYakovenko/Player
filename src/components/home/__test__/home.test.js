@@ -8,6 +8,7 @@ describe('Check Home component', () => {
     const props = {
         children: <div>First test</div>,
     };
+
     test('should be selectable by class "wrapper"', () => {
         const wrapper = shallow(<Home {...props} />);
         expect(wrapper.is('.wrapper')).toBe(true);

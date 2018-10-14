@@ -1,5 +1,14 @@
+import thunk from 'redux-thunk';
+import fetchMock from 'fetch-mock';
+import configureMockStore from 'redux-mock-store';
+import { Howler } from 'howler';
+
+import { SEARCH_URL } from '../../config/api';
+
 import {
     createPlaylist,
+    loadTracks,
+    makeSort,
     playTrack,
     pauseTrack,
     addToFavourites,
@@ -8,6 +17,10 @@ import {
     changeVolume,
     runTrack,
     CREATE_PLAYLIST,
+    LOAD_TRACKS_START,
+    LOAD_TRACKS_SUCCESS,
+    LOAD_TRACKS_ERROR,
+    TRACKS_SORT,
     TRACK_PLAY,
     TRACK_PAUSE,
     ADD_TO_FAVOURITES,
@@ -17,6 +30,85 @@ import {
     RUN_TRACK,
 } from '../index';
 
+
+describe('Test async actions', () => {
+    afterEach(() => {
+        fetchMock.reset();
+        fetchMock.restore();
+    });
+
+    const middlewares = [thunk];
+    const mockStore = configureMockStore(middlewares);
+    const url = `${SEARCH_URL}?term=adele&limit=10`;
+
+    test('should create an async action to load tracks', () => {
+        const tracks = [
+            {
+                trackId: 420075185,
+                artistName: 'Adele',
+                collectionName: '21',
+                trackName: 'Someone Like You',
+            },
+            {
+                trackId: 1051394215,
+                artistName: 'Adele',
+                collectionName: '25',
+                trackName: 'Hello',
+            },
+        ];
+        const store = mockStore({ tracks: [] });
+        const expectedActions = [
+            { type: LOAD_TRACKS_START },
+            {
+                type: LOAD_TRACKS_SUCCESS,
+                data: {
+                    results: tracks,
+                    resultCount: tracks.length,
+                },
+            },
+            { type: CREATE_PLAYLIST, tracks },
+        ];
+
+        fetchMock.get(url, {
+            body: { results: tracks, resultCount: tracks.length },
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+        });
+
+        Howler._howls = ['a', 'b'];
+        Howler.unload = jest.fn();
+        if (Howler._howls.length) Howler.unload();
+
+        expect.assertions(2);
+        expect(Howler.unload).toBeCalled();
+        store.dispatch(loadTracks('adele')).then(() => {
+            expect(store.getActions()).toEqual(expectedActions);
+        });
+    });
+
+    test('async action loadTracks fails with error', () => {
+        const store = mockStore({ tracks: [] });
+        const expectedActions = [
+            { type: LOAD_TRACKS_START },
+            {
+                type: LOAD_TRACKS_ERROR,
+                data: 'Can\'t load tracks; Fetch error',
+            },
+        ];
+
+        fetchMock.get(url, () => { throw new Error('error'); });
+
+        Howler._howls = [];
+        Howler.unload = jest.fn();
+        if (Howler._howls.length) Howler.unload();
+
+        expect.assertions(2);
+        expect(Howler.unload).not.toBeCalled();
+        store.dispatch(loadTracks('adele')).then(() => {
+            expect(store.getActions()).toEqual(expectedActions);
+        });
+    });
+});
 
 describe('Test actions', () => {
     test('should create an action to create playlist', () => {
@@ -39,6 +131,14 @@ describe('Test actions', () => {
             tracks,
         };
         expect(createPlaylist(tracks)).toEqual(expectedAction);
+    });
+
+    test('should create an action to make sort', () => {
+        const expectedAction = {
+            type: TRACKS_SORT,
+            field: 'primaryGenreName',
+        };
+        expect(makeSort('primaryGenreName')).toEqual(expectedAction);
     });
 
     test('should create an action to play track', () => {

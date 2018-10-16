@@ -9,13 +9,18 @@ import {
 
 
 test('convert number to string depending on its value', () => {
+    expect(formatTime(237)).toBe('237');
     expect(formatTime(45)).toBe('45');
-    expect(formatTime(5)).toBe('05');
     expect(formatTime(10)).toBe('10');
+    expect(formatTime(5)).toBe('05');
+    expect(formatTime(0)).toBe('00');
 });
 
 
 test('format time in ms to get duration', () => {
+    expect(getTrackDuration(368858000)).toBe('102:27:38');
+    expect(getTrackDuration(14400000)).toBe('04:00:00');
+    expect(getTrackDuration(4525000)).toBe('01:15:25');
     expect(getTrackDuration(150000)).toBe('00:02:30');
     expect(getTrackDuration(120000)).toBe('00:02:00');
     expect(getTrackDuration(0)).toBe('00:00:00');

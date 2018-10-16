@@ -1,5 +1,5 @@
-function formatTime(value) {
-    const result = (value < 10) ? `0${value}` : value;
+export function formatTime(value) {
+    const result = (value < 10) ? `0${value}` : `${value}`;
     return result;
 }
 

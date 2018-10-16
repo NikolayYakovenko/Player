@@ -10,7 +10,7 @@ import {
 } from '../actions';
 
 
-const DEFAULT_STATE = {
+export const DEFAULT_STATE = {
     fetching: false,
     tracks: [],
     count: 0,
@@ -18,7 +18,7 @@ const DEFAULT_STATE = {
 };
 
 
-const DEFAULT_FAVOURITES_STATE = {
+export const DEFAULT_FAVOURITES_STATE = {
     favourites: [],
     active: [],
 };

@@ -7,6 +7,10 @@
     "rules": {
         "no-case-declarations": 0,
         "no-underscore-dangle": 0,
+        "import/no-extraneous-dependencies": [
+            "error",
+            { "devDependencies": true }
+        ],
         "import/extensions": "off",
         "react/forbid-prop-types": "off",
         "arrow-body-style": 0,
@@ -41,6 +45,8 @@
     },
     "env": {
         "browser": true,
-        "node": true
+        "node": true,
+        "es6": true,
+        "jest": true
     }
 }

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --no-cache",
     "test:coverage": "jest --coverage",
-    "app": "webpack --progress --mode=production && node server.js",
+    "start": "webpack --progress --mode=production && node server.js",
     "server": "node server.js",
     "build": "webpack --progress --mode=production",
     "dev": "webpack -w --progress --mode=development --env.reload",

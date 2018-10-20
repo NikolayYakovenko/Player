@@ -4,7 +4,7 @@ var express = require('express');
 var morgan = require('morgan');
 
 var app = express();
-var port = 3000;
+var port = process.env.PORT || 3000;
 
 app.use(morgan('tiny'));
 app.use(express.static(path.join(__dirname, 'dist')));

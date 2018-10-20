@@ -5,6 +5,8 @@ import cs from 'classnames';
 
 import { PlayButtonContainer } from '../playButton/playButtonContainer';
 
+import { getTrackDuration } from '../../helpers/index';
+
 import { SvgIcon } from '../ui/svgIcon/svgIcon';
 
 import prevIcon from './svg/prevIcon.svg';
@@ -34,10 +36,13 @@ export class ReactPlayer extends React.Component {
         this.volumeSliderRef = React.createRef();
         this.volumeControlRef = React.createRef();
         this.volumeBarEmptyRef = React.createRef();
+
+        this.trackBarEmptyRef = React.createRef();
+        this.trackProgressBarRef = React.createRef();
     }
 
     state = {
-        duration: '0:00',
+        duration: getTrackDuration(),
         volumeControlVisible: false,
     };
 
@@ -46,9 +51,16 @@ export class ReactPlayer extends React.Component {
         const volumeControlRef = this.volumeControlRef.current;
         const volumeBarEmptyRef = this.volumeBarEmptyRef.current;
 
+        const trackBarEmptyRef = this.trackBarEmptyRef.current;
+
         volumeBarEmptyRef.addEventListener('click', (event) => {
             const per = event.layerX / parseFloat(volumeBarEmptyRef.scrollWidth);
             this.props.changeVolume(per);
+        });
+
+        trackBarEmptyRef.addEventListener('click', (event) => {
+            const per = event.layerX / parseFloat(trackBarEmptyRef.scrollWidth);
+            this.seekTrack(per);
         });
 
         volumeSliderRef.addEventListener('mousedown', () => {
@@ -88,7 +100,7 @@ export class ReactPlayer extends React.Component {
             const oldIndex = prevProps.currentTrack.index;
 
             // stop previous track
-            if (playlist[oldIndex].howl) {
+            if (playlist[oldIndex] && playlist[oldIndex].howl) {
                 playlist[oldIndex].howl.stop();
             }
 
@@ -150,7 +162,7 @@ export class ReactPlayer extends React.Component {
                 preload: true,
                 onplay: () => {
                     self.setState({
-                        duration: self.formatTime(Math.round(sound.duration())),
+                        duration: getTrackDuration(self.getSoundDuration(sound) * 1000),
                     });
                     requestAnimationFrame(self.step.bind(self));
                 },
@@ -221,18 +233,49 @@ export class ReactPlayer extends React.Component {
         runTrack(playlist[newIndex].id);
     }
 
-    step() {
-        const { playlist, currentTrack: { index } } = this.props;
-        const self = this;
+    getSoundSeek(sound) {
+        // return current track position in seconds
+        return sound.seek() || 0;
+    }
 
+    getSoundDuration(sound) {
+        // return current track duration in seconds
+        return sound.duration();
+    }
+
+    step() {
+        const self = this;
+        const { playlist, currentTrack: { index } } = this.props;
         // Get the Howl we want to manipulate.
         const sound = playlist[index].howl;
 
         if (sound && sound.playing()) {
             // Determine our current seek position.
-            const seek = sound.seek() || 0;
-            this.playerTimerRef.current.innerHTML = this.formatTime(Math.round(seek));
+            const seek = this.getSoundSeek(sound);
+            const timer = getTrackDuration(seek * 1000);
+            const progress = (seek / this.getSoundDuration(sound)).toFixed(4) * 100;
+
+            this.playerTimerRef.current.innerHTML = timer;
+            this.trackProgressBarRef.current.style.width = `${progress}%`;
+
             requestAnimationFrame(self.step.bind(self));
+        }
+    }
+
+    seekTrack = (value) => {
+        const { currentTrack: { index }, playlist } = this.props;
+        const sound = playlist[index].howl;
+
+        if (sound) {
+            const seek = this.getSoundSeek(sound);
+            const duration = this.getSoundDuration(sound);
+            const timer = getTrackDuration(seek * 1000);
+            const progress = (seek / duration).toFixed(4) * 100;
+
+            sound.seek(duration * value);
+
+            this.playerTimerRef.current.innerHTML = timer;
+            this.trackProgressBarRef.current.style.width = `${progress}%`;
         }
     }
 
@@ -258,15 +301,13 @@ export class ReactPlayer extends React.Component {
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
 
-    getVolumeValueOnSliderMove(event) {
-        const volumeBarEmpty = this.volumeBarEmptyRef.current;
+    getVolumeValueOnSliderMove(event, element) {
         const x = event.clientX || event.touches[0].clientX;
-
-        const { width, left } = volumeBarEmpty.getBoundingClientRect();
+        const { width, left } = element.getBoundingClientRect();
+        let volumeValue = 0;
 
         // normalized to bar width absolute value
         const absValue = (x - left) > 0 ? (x - left) : 0;
-        let volumeValue = 0;
 
         volumeValue = Math.min(1, absValue / width);
         return volumeValue;
@@ -275,7 +316,21 @@ export class ReactPlayer extends React.Component {
     changeVolumeOnSliderMove(event) {
         if (window.sliderDown) {
             const { changeVolume } = this.props;
-            changeVolume(this.getVolumeValueOnSliderMove(event));
+            const volumeValue = this.getVolumeValueOnSliderMove(
+                event,
+                this.volumeBarEmptyRef.current,
+            );
+            changeVolume(volumeValue);
+        }
+    }
+
+    changeProgressOnSliderMove(event) {
+        if (window.sliderDown) {
+            const progressValue = this.getVolumeValueOnSliderMove(
+                event,
+                this.trackBarEmptyRef.current,
+            );
+            this.seekTrack(progressValue);
         }
     }
 
@@ -346,18 +401,19 @@ export class ReactPlayer extends React.Component {
 
     volumeControlBar() {
         const { volumeValue } = this.props;
+
         const { volumeControlVisible } = this.state;
-        const barWidth = `${Math.round(volumeValue * 100)}%`;
+        const barWidth = `${volumeValue * 100}%`;
 
         return (
             <div
                 ref={this.volumeControlRef}
-                className={cs('volumeControl', {
+                className={cs('volumeControl volumeControlMl30', {
                     volumeControlVisible,
                 })}
             >
                 <div
-                    className='volumeBar volumeBarFull'
+                    className='volumeBar'
                     style={{ width: barWidth }}
                 >
                     <button
@@ -367,6 +423,24 @@ export class ReactPlayer extends React.Component {
                 </div>
                 <div
                     ref={this.volumeBarEmptyRef}
+                    className='volumeBar volumeBarEmpty'
+                />
+            </div>
+        );
+    }
+
+    trackProgressBar() {
+        return (
+            <div className='volumeControl volumeControlVisible'>
+                <div
+                    ref={this.trackProgressBarRef}
+                    style={{ width: 0 }}
+                    className='volumeBar'
+                >
+                    <button className='volumeSlider' />
+                </div>
+                <div
+                    ref={this.trackBarEmptyRef}
                     className='volumeBar volumeBarEmpty'
                 />
             </div>
@@ -392,9 +466,10 @@ export class ReactPlayer extends React.Component {
 
         return (
             <div className='playerWrapper'>
+                {this.trackProgressBar()}
                 <div className='trackInfoWrapper'>
                     <p>
-                        <b ref={this.playerTimerRef}>0:00</b>
+                        <b ref={this.playerTimerRef}>{getTrackDuration()}</b>
                     </p>
                     <p className='trackInfoName'>
                         {title ?

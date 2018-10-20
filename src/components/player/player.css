@@ -41,7 +41,7 @@
 .playerButtonSmall {
     flex: 0 0 30px;
     max-width: 30px;
-    padding: 15px 0;
+    padding: 5px 0;
 }
 
 .playerButtonSmall .playerControl {
@@ -92,9 +92,12 @@
     position: relative;
     flex: 0 1 300px;
     width: 100%;
-    height: 50px;
-    margin-left: 30px;
+    height: 30px;
     box-sizing: border-box;
+}
+
+.volumeControlMl30 {
+    margin-left: 30px;
 }
 
 .volumeControlVisible {
@@ -110,32 +113,27 @@
     top: 50%;
     margin-top: -5px;
     width: 100%;
-    height: 10px;
+    height: 7px;
     background-color: rgba(255, 87, 34, 1);
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.33);
     border-radius: 3px;
 }
 
 .volumeBarEmpty {
-    width: 100%;
     background-color: rgba(208, 212, 220, 1);;
     box-shadow: none;
     cursor: pointer;
     opacity: 0.5;
 }
 
-.volumeBarFull {
-    width: 100%;
-}
-
 .volumeSlider {
     position: absolute;
     z-index: 5;
     top: 50%;
-    right: -15px;
-    width: 30px;
-    height: 30px;
-    margin-top: -15px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
     background-color: #7c8796;
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.33);
     border-radius: 50%;

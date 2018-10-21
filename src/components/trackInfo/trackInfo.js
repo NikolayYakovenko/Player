@@ -132,14 +132,14 @@ export class TrackInfo extends React.Component {
 
     noTrackFound() {
         return (
-            <React.Fragment>
+            <div className='noTrackFound'>
                 <h3>
                     There is no track with id <b>{this.props.match.params.id}</b>
                 </h3>
                 <Link to='/'>
                     Go to the main page
                 </Link>
-            </React.Fragment>
+            </div>
         );
     }
 

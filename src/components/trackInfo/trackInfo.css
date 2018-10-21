@@ -1,6 +1,6 @@
 .backLink {
     display: block;
-    margin-bottom: 20px;
+    margin: 10px 0 20px;
 }
 
 .backLink:before {
@@ -28,4 +28,18 @@
 .buyTrackButton {
     padding: 10px;
     width: 150px;
+}
+
+.noTrackFound {
+    margin-top: 30px;
+}
+
+@media screen and (max-width: 480px) {
+    .controlButton {
+        margin-right: 15px;
+    }
+
+    .buyTrackButton {
+        width: auto;
+    }
 }

@@ -26,12 +26,12 @@
 }
 
 .trackItem {
-    margin-right: 10px;
     flex: 1 1 0;
 }
 
 .itemSmall {
-    flex: 0 0 70px;
+    flex: 0 1 70px;
+    margin-left: 10px;
 }
 
 .trackName {
@@ -42,4 +42,18 @@
 .trackDetails {
     margin-bottom: 5px;
     color: #7c8796;
+}
+
+.trackDetailsShowOnSmall {
+    display: none;
+}
+
+@media screen and (max-width: 480px) {
+    .itemHideOnSmall {
+        display: none;
+    }
+
+    .trackDetailsShowOnSmall {
+        display: block;
+    }
 }

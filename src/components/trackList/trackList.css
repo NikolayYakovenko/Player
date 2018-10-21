@@ -31,3 +31,18 @@
 .sortable:hover {
     color: #7c8796
 }
+
+.sortTracksLabel {
+    display: none;
+}
+
+@media screen and (max-width: 480px) {
+    .sortTracksLabel {
+        display: inline;
+        white-space: nowrap;
+    }
+
+    .headerTitle {
+        display: none;
+    }
+}

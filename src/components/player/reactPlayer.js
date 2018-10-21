@@ -269,8 +269,8 @@ export class ReactPlayer extends React.Component {
         const sound = playlist.length && playlist[index].howl;
 
         if (sound) {
-            const seek = sound.seek() || 0;
-            const duration = sound.duration();
+            const seek = this.getSoundSeek(sound);
+            const duration = this.getSoundDuration(sound);
             const timer = getTrackDuration(seek * 1000);
             const progressBarWidth = value.toFixed(4) * 100;
 

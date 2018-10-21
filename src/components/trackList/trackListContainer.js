@@ -11,6 +11,7 @@ function mapStateToProps(state) {
         fetching: state.list.fetching,
         tracks: state.list.tracks,
         count: state.list.count,
+        errorMessage: state.list.errorMessage,
     };
 }
 

@@ -12,10 +12,10 @@
 
 .playerButton {
     display: inline-block;
-    flex: 0 0 60px;
-    max-width: 60px;
+    flex: 0 0 30px;
+    max-width: 30px;
     border: none;
-    padding: 0;
+    padding: 5px 0;
     outline: none;
     background: none;
     cursor: pointer;
@@ -35,13 +35,13 @@
 }
 
 .playerButtonSmall {
-    flex: 0 0 30px;
-    max-width: 30px;
+    flex: 0 0 20px;
+    max-width: 20px;
     padding: 5px 0;
 }
 
 .playerButtonSmall .playerControl {
-    width: 30px;
+    width: 20px;
 }
 
 .playerButton:disabled {
@@ -51,7 +51,7 @@
 }
 
 .playerControl {
-    width: 60px;
+    width: 30px;
     color: #7c8796;
     transition: color .1s linear;
 }
@@ -70,6 +70,7 @@
 .trackInfoName {
     max-width: 430px;
     overflow: hidden;
+    margin: 0 10px;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -86,14 +87,14 @@
 .volumeControl {
     display: none;
     position: relative;
-    flex: 0 1 300px;
+    flex: 0 1 240px;
     width: 100%;
     height: 30px;
     box-sizing: border-box;
 }
 
-.volumeControlMl30 {
-    margin-left: 30px;
+.volumeControlMl15 {
+    margin-left: 15px;
 }
 
 .volumeControlVisible {
@@ -101,7 +102,9 @@
 }
 
 .volumeValue {
-    margin-left: 20px;
+    margin-left: 15px;
+    font-size: 11px;
+    color: grey;
 }
 
 .volumeBar {

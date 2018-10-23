@@ -22,25 +22,19 @@ export class TrackList extends React.Component {
         errorMessage: PropTypes.string,
     }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            searchValue: '',
-        };
-
-        this.makeSearch = this.makeSearch.bind(this);
-    }
+    state = {
+        searchValue: '',
+    };
 
     componentDidMount() {
         this.searchInput.addEventListener('keyup', event => this.makeSearch(event));
-        this.searchInput.focus();
     }
 
     componentWillUnmount() {
         this.searchInput.removeEventListener('keyup', event => this.makeSearch(event));
     }
 
-    makeSearch(event) {
+    makeSearch = (event) => {
         const { searchValue } = this.state;
         const searchNotEmpty = searchValue.length > 0;
 
@@ -68,7 +62,8 @@ export class TrackList extends React.Component {
                 <ul>
                     <li className='listHeader' key='listHeader'>
                         <div className='trackItem'>
-                            <b>Title</b>
+                            <b className='headerTitle'>Title</b>
+                            <b className='sortTracksLabel'>Sort by:</b>
                         </div>
                         <div
                             className='itemSmall sortable'

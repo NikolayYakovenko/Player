@@ -31,7 +31,7 @@ export const PlayButton = (props) => {
     return (
         <button
             id={id}
-            className='playerButton playerButtonSmall'
+            className='playerButton'
             onClick={buttonAction}
             disabled={disabled}
             type='button'

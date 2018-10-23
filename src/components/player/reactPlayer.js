@@ -266,13 +266,13 @@ export class ReactPlayer extends React.Component {
 
     seekTrack = (value) => {
         const { currentTrack: { index }, playlist } = this.props;
-        const sound = playlist[index].howl;
+        const sound = playlist.length && playlist[index].howl;
 
         if (sound) {
             const seek = this.getSoundSeek(sound);
             const duration = this.getSoundDuration(sound);
             const timer = getTrackDuration(seek * 1000);
-            const progressBarWidth = (seek / duration).toFixed(4) * 100;
+            const progressBarWidth = value.toFixed(4) * 100;
 
             sound.seek(duration * value);
 
@@ -338,7 +338,7 @@ export class ReactPlayer extends React.Component {
     prevButton() {
         return (
             <button
-                className='playerButton playerButtonSmall'
+                className='playerButton'
                 onClick={() => this.skip('prev')}
                 disabled={this.noTracksLoaded()}
                 type='button'
@@ -354,7 +354,7 @@ export class ReactPlayer extends React.Component {
     nextButton() {
         return (
             <button
-                className='playerButton playerButtonSmall'
+                className='playerButton'
                 onClick={() => this.skip('next')}
                 disabled={this.noTracksLoaded()}
                 type='button'
@@ -391,7 +391,7 @@ export class ReactPlayer extends React.Component {
         return (
             <div
                 ref={this.volumeControlRef}
-                className={cs('volumeControl volumeControlMl30', {
+                className={cs('volumeControl volumeControlMl15', {
                     volumeControlVisible,
                 })}
             >
@@ -451,18 +451,14 @@ export class ReactPlayer extends React.Component {
             <div className='playerWrapper'>
                 {this.trackProgressBar()}
                 <div className='trackInfoWrapper'>
-                    <p>
-                        <b ref={this.playerTimerRef}>{getTrackDuration()}</b>
-                    </p>
+                    <p ref={this.playerTimerRef}>{getTrackDuration()}</p>
                     <p className='trackInfoName'>
                         {title ?
                             <b>{`${index + 1}. ${title}`}</b>
                             : null
                         }
                     </p>
-                    <p>
-                        <b>{this.state.duration}</b>
-                    </p>
+                    <p>{this.state.duration}</p>
                 </div>
                 <div className='player'>
                     {this.prevButton()}

@@ -50,14 +50,31 @@ export const Track = (props) => {
                 <div className='trackDetails'>
                     <b>Release date</b>: {getReleaseDate(trackInfo.releaseDate)}
                 </div>
+
+                <div className='trackDetails trackDetailsShowOnSmall'>
+                    <b>Genre</b>: {trackInfo.primaryGenreName}
+                </div>
+                <div className='trackDetails trackDetailsShowOnSmall'>
+                    <b>Duration</b>: {getTrackDuration(trackInfo.trackTimeMillis)}
+                </div>
+                <div className='trackDetails trackDetailsShowOnSmall'>
+                    <b>Price</b>:&nbsp;
+                    {trackInfo.trackPrice > 0 ?
+                        <span>
+                            <b>{trackInfo.trackPrice}</b> {trackInfo.currency}
+                        </span>
+                        :
+                        <b>Free</b>
+                    }
+                </div>
             </div>
-            <div className='itemSmall'>
+            <div className='itemSmall itemHideOnSmall'>
                 {trackInfo.primaryGenreName}
             </div>
-            <div className='itemSmall'>
+            <div className='itemSmall itemHideOnSmall'>
                 {getTrackDuration(trackInfo.trackTimeMillis)}
             </div>
-            <div className='itemSmall'>
+            <div className='itemSmall itemHideOnSmall'>
                 {trackInfo.trackPrice > 0 ?
                     <span>
                         <b>{trackInfo.trackPrice}</b> {trackInfo.currency}

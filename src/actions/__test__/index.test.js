@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import configureMockStore from 'redux-mock-store';
 import { Howler } from 'howler';
 
-import { SEARCH_URL } from '../../config/api';
+import { API_SEARCH } from '../../config/api';
 
 import {
     createPlaylist,
@@ -39,7 +39,7 @@ describe('Test async actions', () => {
 
     const middlewares = [thunk];
     const mockStore = configureMockStore(middlewares);
-    const url = `${SEARCH_URL}?term=adele&limit=10`;
+    const url = `${API_SEARCH}?term=adele&limit=10`;
 
     test('should create an async action to load tracks', () => {
         const tracks = [
@@ -92,7 +92,7 @@ describe('Test async actions', () => {
             { type: LOAD_TRACKS_START },
             {
                 type: LOAD_TRACKS_ERROR,
-                data: 'Can\'t load tracks; Fetch error',
+                data: 'Can\'t load tracks. Fetch error',
             },
         ];
 

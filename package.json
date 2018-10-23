@@ -6,13 +6,12 @@
   "scripts": {
     "test": "jest --no-cache",
     "test:coverage": "jest --coverage",
-    "start": "node server.js",
+    "start": "NODE_ENV=production node server.js",
     "server": "node server.js",
     "build": "webpack --progress --mode=production",
     "dev": "webpack -w --progress --mode=development --env.reload",
     "analyze": "webpack -w --progress --mode=development --env.analyze",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false webpack --mode=production"
-
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false NODE_ENV=production webpack --mode=production"
   },
   "author": "Mykola Yakovenko",
   "license": "ISC",
@@ -65,6 +64,7 @@
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
+    "request": "^2.88.0",
     "webpack-cli": "^3.0.4"
   }
 }

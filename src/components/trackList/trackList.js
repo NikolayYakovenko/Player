@@ -19,6 +19,7 @@ export class TrackList extends React.Component {
         tracks: PropTypes.array,
         fetching: PropTypes.bool,
         count: PropTypes.number,
+        errorMessage: PropTypes.string,
     }
 
     constructor(props) {
@@ -55,9 +56,15 @@ export class TrackList extends React.Component {
     }
 
     renderList() {
-        const { tracks, count, makeSort } = this.props;
-        return (
-            count ?
+        const {
+            tracks,
+            count,
+            makeSort,
+            errorMessage,
+        } = this.props;
+
+        if (count) {
+            return (
                 <ul>
                     <li className='listHeader' key='listHeader'>
                         <div className='trackItem'>
@@ -89,8 +96,15 @@ export class TrackList extends React.Component {
                         return <Track key={track.trackId} trackInfo={track} />;
                     })}
                 </ul>
-                :
-                <div className='noResults'>Nothing was found</div>
+            );
+        } else if (errorMessage) {
+            return (
+                <div className='noResults'>{errorMessage}</div>
+            );
+        }
+
+        return (
+            <div className='noResults'>Nothing was found</div>
         );
     }
 

@@ -1,6 +1,6 @@
 import { Howler } from 'howler';
 
-import { SEARCH_URL } from '../config/api';
+import { API_SEARCH } from '../config/api';
 import { requestData } from '../helpers';
 
 export const LOAD_TRACKS_START = 'LOAD_TRACKS_START';
@@ -29,7 +29,7 @@ export const createPlaylist = (tracks) => {
 };
 
 export const loadTracks = value => async (dispatch) => {
-    const url = `${SEARCH_URL}?term=${value}&limit=10`;
+    const url = `${API_SEARCH}?term=${value}&limit=10`;
 
     dispatch({
         type: LOAD_TRACKS_START,
@@ -40,6 +40,7 @@ export const loadTracks = value => async (dispatch) => {
 
     try {
         const request = await requestData(url);
+
         dispatch({
             type: LOAD_TRACKS_SUCCESS,
             data: request,
@@ -49,7 +50,7 @@ export const loadTracks = value => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: LOAD_TRACKS_ERROR,
-            data: 'Can\'t load tracks; Fetch error',
+            data: 'Can\'t load tracks. Fetch error',
         });
     }
 };

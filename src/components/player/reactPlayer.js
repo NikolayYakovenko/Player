@@ -24,7 +24,7 @@ export class ReactPlayer extends React.Component {
         changeVolume: PropTypes.func,
         playlist: PropTypes.array,
         volumeValue: PropTypes.number,
-        selectedTrackId: PropTypes.number,
+        selectedTrackId: PropTypes.string,
         currentTrack: PropTypes.object,
         isPlaying: PropTypes.bool,
     };
@@ -38,7 +38,9 @@ export class ReactPlayer extends React.Component {
         this.volumeControlRef = React.createRef();
         this.volumeBarEmptyRef = React.createRef();
 
+        this.trackProgressSliderRef = React.createRef();
         this.trackProgressEmptyRef = React.createRef();
+        this.trackProgressControlRef = React.createRef();
         this.trackProgressRef = React.createRef();
     }
 
@@ -52,18 +54,15 @@ export class ReactPlayer extends React.Component {
         const volumeControlRef = this.volumeControlRef.current;
         const volumeBarEmptyRef = this.volumeBarEmptyRef.current;
 
+        const trackProgressSliderRef = this.trackProgressSliderRef.current;
         const trackProgressEmptyRef = this.trackProgressEmptyRef.current;
+        const trackProgressControlRef = this.trackProgressControlRef.current;
 
+        // volume slider START
         volumeBarEmptyRef.addEventListener('click', (event) => {
             const per = event.layerX / parseFloat(volumeBarEmptyRef.scrollWidth);
             this.props.changeVolume(per);
         });
-
-        trackProgressEmptyRef.addEventListener('click', (event) => {
-            const per = event.layerX / parseFloat(trackProgressEmptyRef.scrollWidth);
-            this.seekTrack(per);
-        });
-
         volumeSliderRef.addEventListener('mousedown', () => {
             window.sliderDown = true;
         });
@@ -80,6 +79,32 @@ export class ReactPlayer extends React.Component {
         volumeControlRef.addEventListener('touchmove', (event) => {
             this.changeVolumeOnSliderMove(event);
         });
+        // volume slider END
+
+
+        // track slider START
+        trackProgressEmptyRef.addEventListener('click', (event) => {
+            const per = event.layerX / parseFloat(trackProgressEmptyRef.scrollWidth);
+            this.seekTrack(per);
+        });
+        trackProgressSliderRef.addEventListener('mousedown', () => {
+            window.sliderDown = true;
+        });
+        trackProgressControlRef.addEventListener('mouseup', () => {
+            window.sliderDown = false;
+            this.playTrackOnMouseup();
+        });
+        trackProgressControlRef.addEventListener('touchend', () => {
+            window.sliderDown = true;
+            this.playTrackOnMouseup();
+        });
+        trackProgressControlRef.addEventListener('mousemove', (event) => {
+            this.changeProgressOnSliderMove(event);
+        });
+        trackProgressControlRef.addEventListener('touchmove', (event) => {
+            this.changeProgressOnSliderMove(event);
+        });
+        // track slider END
 
         document.addEventListener('click', (event) => {
             this.hideVolumeButtonOnOutsideClick(event);
@@ -129,12 +154,19 @@ export class ReactPlayer extends React.Component {
 
     componentWillUnmount() {
         const volumeControlRef = this.volumeControlRef.current;
+        const trackProgressControlRef = this.trackProgressControlRef.current;
 
         volumeControlRef.removeEventListener('mousemove', (event) => {
             this.changeVolumeOnSliderMove(event);
         });
         volumeControlRef.removeEventListener('touchmove', (event) => {
             this.changeVolumeOnSliderMove(event);
+        });
+        trackProgressControlRef.removeEventListener('mousemove', (event) => {
+            this.changeProgressOnSliderMove(event);
+        });
+        trackProgressControlRef.removeEventListener('touchmove', (event) => {
+            this.changeProgressOnSliderMove(event);
         });
 
         document.removeEventListener('click', (event) => {
@@ -169,6 +201,9 @@ export class ReactPlayer extends React.Component {
                 },
                 onend: () => {
                     self.skip('next');
+                },
+                onseek: () => {
+                    self.pause();
                 },
             });
             data.howl = sound;
@@ -234,11 +269,6 @@ export class ReactPlayer extends React.Component {
         runTrack(playlist[newIndex].id);
     }
 
-    getSoundSeek(sound) {
-        // return current track position in seconds
-        return sound.seek() || 0;
-    }
-
     getSoundDuration(sound) {
         // return current track duration in seconds
         return sound.duration();
@@ -252,7 +282,7 @@ export class ReactPlayer extends React.Component {
 
         if (sound && sound.playing()) {
             // Determine our current seek position.
-            const seek = this.getSoundSeek(sound);
+            const seek = sound.seek();
             const duration = this.getSoundDuration(sound);
             const timer = getTrackDuration(seek * 1000);
             const progressBarWidth = (seek / duration).toFixed(4) * 100;
@@ -264,17 +294,32 @@ export class ReactPlayer extends React.Component {
         }
     }
 
+    playTrackOnMouseup = () => {
+        const { currentTrack: { index }, playlist, isPlaying } = this.props;
+
+        // if track is paused do not anything
+        if (!isPlaying) return;
+
+        // wait for onseek event ends and resume playing track
+        setTimeout(() => {
+            const sound = playlist.length && playlist[index].howl;
+
+            if (sound && !sound.playing()) {
+                sound.play();
+            }
+        }, 100);
+    }
+
     seekTrack = (value) => {
         const { currentTrack: { index }, playlist } = this.props;
         const sound = playlist.length && playlist[index].howl;
 
         if (sound) {
-            const seek = this.getSoundSeek(sound);
             const duration = this.getSoundDuration(sound);
-            const timer = getTrackDuration(seek * 1000);
             const progressBarWidth = value.toFixed(4) * 100;
 
             sound.seek(duration * value);
+            const timer = getTrackDuration(sound.seek() * 1000);
 
             this.playerTimerRef.current.innerHTML = timer;
             this.trackProgressRef.current.style.width = `${progressBarWidth}%`;
@@ -315,6 +360,16 @@ export class ReactPlayer extends React.Component {
                 this.volumeBarEmptyRef.current,
             );
             changeVolume(volumeValue);
+        }
+    }
+
+    changeProgressOnSliderMove(event) {
+        if (window.sliderDown) {
+            const value = this.getValueOnSliderMove(
+                event,
+                this.trackProgressEmptyRef.current,
+            );
+            this.seekTrack(value);
         }
     }
 
@@ -414,13 +469,19 @@ export class ReactPlayer extends React.Component {
 
     trackProgressBar() {
         return (
-            <div className='volumeControl volumeControlVisible'>
+            <div
+                ref={this.trackProgressControlRef}
+                className='volumeControl volumeControlVisible'
+            >
                 <div
                     ref={this.trackProgressRef}
                     style={{ width: 0 }}
                     className='volumeBar'
                 >
-                    <button className='volumeSlider' />
+                    <button
+                        ref={this.trackProgressSliderRef}
+                        className='volumeSlider'
+                    />
                 </div>
                 <div
                     ref={this.trackProgressEmptyRef}

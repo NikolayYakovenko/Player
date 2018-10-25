@@ -2,11 +2,14 @@ const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const request = require('request');
+const compression = require('compression');
 
 const app = express();
 const port = process.env.PORT || 3000;
 const SEARCH_URL = 'https://itunes.apple.com/search';
 
+// Enable gzip compression
+app.use(compression());
 
 app.use(morgan('tiny'));
 app.use(express.static(path.join(__dirname, 'dist')));
@@ -30,7 +33,7 @@ app.get('/api/search', (req, res) => {
                 res.json({ error });
             }
             res.json(body);
-        },
+        }
     );
 });
 

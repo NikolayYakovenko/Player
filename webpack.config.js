@@ -1,28 +1,27 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 
 module.exports = (env, argv) => {
+    const isDevMode = argv.mode !== 'production';
     const config = {
         entry: {
             main: './src/index.js',
         },
         output: {
-            filename: '[name]_bundle.js',
             path: path.resolve(__dirname, 'dist'),
-            chunkFilename: '[name]_bundle.js',
+            filename: isDevMode ? '[name].js' : '[name].[contenthash:6].js',
             publicPath: '/',
         },
         module: {
             rules: [
                 {
                     test: /\.css$/,
-                    use: [
-                        'style-loader',
-                        'css-loader',
-                    ],
+                    use: ['style-loader', 'css-loader'],
                 },
                 {
                     test: /\.jsx?$/,
@@ -39,26 +38,33 @@ module.exports = (env, argv) => {
             ],
         },
         plugins: [
+            new CleanWebpackPlugin(['dist']),
             new HtmlWebpackPlugin({
                 template: path.resolve(__dirname, 'src', 'index.html'),
                 inject: 'body',
                 filename: 'index.html',
             }),
+
+            // create hashes to be based on the relative path of the module
+            // prevent hash change for vendors bundle if it was not modified
+            new webpack.HashedModuleIdsPlugin(),
         ],
         optimization: {
+            runtimeChunk: 'single',
             splitChunks: {
                 cacheGroups: {
                     commons: {
                         test: /[\\/]node_modules[\\/]/,
                         name: 'vendors',
                         chunks: 'all',
+                        enforce: true,
                     },
                 },
             },
         },
     };
 
-    if (argv.mode === 'development') {
+    if (isDevMode) {
         config.devtool = 'source-map';
     }
 

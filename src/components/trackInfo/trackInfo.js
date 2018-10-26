@@ -43,14 +43,15 @@ export class TrackInfo extends React.Component {
     }
 
     getTrackId() {
-        return Number(this.props.match.params.id);
+        return this.props.match.params.id;
     }
 
     getTrackById(id) {
         const { tracks } = this.props;
 
         if (tracks && tracks.length) {
-            const track = tracks.filter(item => item.trackId === id);
+            const track = tracks.filter(item => item.trackId === id.toString());
+
             return track[0];
         }
 

@@ -11,12 +11,16 @@ import './track.css';
 
 
 export const Track = (props) => {
-    const { trackInfo } = props;
+    const { trackInfo, loadTracksByAlbum } = props;
 
     const getReleaseDate = (date) => {
         let a = Date.parse(date);
         a = new Date(a);
         return a.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    };
+
+    const searchTrackByAlbum = () => {
+        loadTracksByAlbum(trackInfo.collectionId);
     };
 
     return (
@@ -43,7 +47,14 @@ export const Track = (props) => {
                 </div>
                 {trackInfo.collectionName ?
                     <div className='trackDetails'>
-                        <b>Album</b>: {trackInfo.collectionName}
+                        <b>Album</b>:
+                        <button
+                            className='allAlbumSongButton'
+                            onClick={searchTrackByAlbum}
+                            title='See all songs from this album'
+                        >
+                            {trackInfo.collectionName}
+                        </button>
                     </div>
                     : null
                 }
@@ -89,4 +100,5 @@ export const Track = (props) => {
 
 Track.propTypes = {
     trackInfo: PropTypes.object.isRequired,
+    loadTracksByAlbum: PropTypes.func,
 };

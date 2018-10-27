@@ -7,6 +7,7 @@ const compression = require('compression');
 const app = express();
 const port = process.env.PORT || 3000;
 const SEARCH_URL = 'https://itunes.apple.com/search';
+const LOOKUP_URL = 'https://itunes.apple.com/lookup';
 
 // Enable gzip compression
 app.use(compression());
@@ -21,10 +22,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/api/search', (req, res) => {
-    const params = req.query;
-    const url = `${SEARCH_URL}?term=${params.term}&limit=${params.limit}`;
-
+const requestHelper = (url, res) => {
     request(
         url,
         { json: true },
@@ -35,6 +33,20 @@ app.get('/api/search', (req, res) => {
             res.json(body);
         }
     );
+};
+
+app.get('/api/search', (req, res) => {
+    const params = req.query;
+    const url = `${SEARCH_URL}?term=${params.term}&limit=10&entity=song&media=music`;
+
+    requestHelper(url, res);
+});
+
+app.get('/api/lookup', (req, res) => {
+    const params = req.query;
+    const url = `${LOOKUP_URL}?id=${params.id}&limit=${params.limit}&entity=song&media=music`;
+
+    requestHelper(url, res);
 });
 
 app.get('/*', (req, res) => {

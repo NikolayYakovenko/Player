@@ -48,6 +48,15 @@
     display: none;
 }
 
+.allAlbumSongButton {
+    margin-left: 3px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: #00a1cd;
+    cursor: pointer;
+}
+
 @media screen and (max-width: 480px) {
     .itemHideOnSmall {
         display: none;

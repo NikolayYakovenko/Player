@@ -15,6 +15,7 @@ const ENTER_KEY = 13;
 export class TrackList extends React.Component {
     static propTypes = {
         loadTracks: PropTypes.func.isRequired,
+        loadTracksByAlbum: PropTypes.func.isRequired,
         makeSort: PropTypes.func.isRequired,
         tracks: PropTypes.array,
         fetching: PropTypes.bool,
@@ -55,6 +56,7 @@ export class TrackList extends React.Component {
             count,
             makeSort,
             errorMessage,
+            loadTracksByAlbum,
         } = this.props;
 
         if (count) {
@@ -88,7 +90,13 @@ export class TrackList extends React.Component {
                         </div>
                     </li>
                     {tracks.map((track) => {
-                        return <Track key={track.trackId} trackInfo={track} />;
+                        return (
+                            <Track
+                                key={track.trackId}
+                                trackInfo={track}
+                                loadTracksByAlbum={loadTracksByAlbum}
+                            />
+                        );
                     })}
                 </ul>
             );

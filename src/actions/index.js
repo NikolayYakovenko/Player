@@ -1,6 +1,6 @@
 import { Howler } from 'howler';
 
-import { API_SEARCH } from '../config/api';
+import { API_SEARCH, API_LOOKUP } from '../config/api';
 import { requestData } from '../helpers';
 
 export const LOAD_TRACKS_START = 'LOAD_TRACKS_START';
@@ -28,9 +28,7 @@ export const createPlaylist = (tracks) => {
     };
 };
 
-export const loadTracks = value => async (dispatch) => {
-    const url = `${API_SEARCH}?term=${value}&limit=10`;
-
+const searchTracks = url => async (dispatch) => {
     dispatch({
         type: LOAD_TRACKS_START,
     });
@@ -53,6 +51,18 @@ export const loadTracks = value => async (dispatch) => {
             data: 'Can\'t load tracks. Fetch error',
         });
     }
+};
+
+export const loadTracks = value => (dispatch) => {
+    const url = `${API_SEARCH}?term=${value}`;
+
+    dispatch(searchTracks(url));
+};
+
+export const loadTracksByAlbum = albumId => (dispatch) => {
+    const url = `${API_LOOKUP}?id=${albumId}`;
+
+    dispatch(searchTracks(url));
 };
 
 export const makeSort = (field) => {
@@ -114,6 +124,7 @@ export const runTrack = (trackId) => {
 
 export const playerActions = {
     loadTracks,
+    loadTracksByAlbum,
     playTrack,
     pauseTrack,
     makeSort,

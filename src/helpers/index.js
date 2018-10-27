@@ -62,3 +62,11 @@ export function sortList(array, field, isSorted) {
     }
     return array;
 }
+
+
+export function getReleaseDate(date) {
+    let a = Date.parse(date);
+    a = new Date(a);
+    return a.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+

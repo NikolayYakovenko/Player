@@ -43,15 +43,17 @@ const playerReducer = (state = DEFAULT_STATE, action) => {
             const { tracks } = action;
             const listOfTracks = [];
 
-            tracks.forEach((track) => {
-                listOfTracks.push({
-                    title: track.trackName,
-                    file: track.previewUrl,
-                    howl: null,
-                    id: track.trackId,
-                    isPlaying: false,
+            tracks
+                .filter(track => track.wrapperType === 'track')
+                .forEach((track) => {
+                    listOfTracks.push({
+                        title: track.trackName,
+                        file: track.previewUrl,
+                        howl: null,
+                        id: track.trackId,
+                        isPlaying: false,
+                    });
                 });
-            });
 
             return {
                 ...state,

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import { getTrackDuration } from '../../helpers';
+import { getTrackDuration, getReleaseDate } from '../../helpers';
 
 import { AddToFavouritesContainer } from '../addToFavourites/addToFavouritesContainer';
 import { PlayButtonContainer } from '../playButton/playButtonContainer';
@@ -12,12 +12,6 @@ import './track.css';
 
 export const Track = (props) => {
     const { trackInfo, loadTracksByAlbum } = props;
-
-    const getReleaseDate = (date) => {
-        let a = Date.parse(date);
-        a = new Date(a);
-        return a.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    };
 
     const searchTrackByAlbum = () => {
         loadTracksByAlbum(trackInfo.collectionId);

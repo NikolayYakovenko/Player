@@ -7,7 +7,9 @@ import { API_SEARCH } from '../../config/api';
 
 import {
     createPlaylist,
+    searchTracks,
     loadTracks,
+    loadTracksByAlbum,
     makeSort,
     playTrack,
     pauseTrack,
@@ -31,7 +33,7 @@ import {
 } from '../index';
 
 
-describe('Test async actions', () => {
+describe('Test async actions to search tracks', () => {
     afterEach(() => {
         fetchMock.reset();
         fetchMock.restore();
@@ -39,9 +41,9 @@ describe('Test async actions', () => {
 
     const middlewares = [thunk];
     const mockStore = configureMockStore(middlewares);
-    const url = `${API_SEARCH}?term=adele&limit=10`;
+    const url = `${API_SEARCH}?term=adele`;
 
-    test('should create an async action to load tracks', () => {
+    test('should create an async action to search tracks', () => {
         const tracks = [
             {
                 trackId: 420075185,
@@ -81,12 +83,12 @@ describe('Test async actions', () => {
 
         expect.assertions(2);
         expect(Howler.unload).toBeCalled();
-        store.dispatch(loadTracks('adele')).then(() => {
+        store.dispatch(searchTracks(url)).then(() => {
             expect(store.getActions()).toEqual(expectedActions);
         });
     });
 
-    test('async action loadTracks fails with error', () => {
+    test('async action searchTracks fails with error', () => {
         const store = mockStore({ tracks: [] });
         const expectedActions = [
             { type: LOAD_TRACKS_START },
@@ -104,11 +106,24 @@ describe('Test async actions', () => {
 
         expect.assertions(2);
         expect(Howler.unload).not.toBeCalled();
-        store.dispatch(loadTracks('adele')).then(() => {
+        store.dispatch(searchTracks(url)).then(() => {
             expect(store.getActions()).toEqual(expectedActions);
         });
     });
+
+    test('should call loadTracks action', async () => {
+        const dispatch = jest.fn();
+
+        expect(await loadTracks('adele')(dispatch)).toBe(undefined);
+    });
+
+    test('should call loadTracksByAlbum action', async () => {
+        const dispatch = jest.fn();
+
+        expect(await loadTracksByAlbum('adele')(dispatch)).toBe(undefined);
+    });
 });
+
 
 describe('Test actions', () => {
     test('should create an action to create playlist', () => {

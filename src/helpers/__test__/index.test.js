@@ -5,6 +5,7 @@ import {
     getTrackDuration,
     sortList,
     requestData,
+    getReleaseDate,
 } from '../index';
 
 
@@ -24,6 +25,11 @@ test('format time in ms to get duration', () => {
     expect(getTrackDuration(150000)).toBe('00:02:30');
     expect(getTrackDuration(120000)).toBe('00:02:00');
     expect(getTrackDuration(0)).toBe('00:00:00');
+});
+
+test('parse and format date', () => {
+    expect(getReleaseDate('2015-10-23T07:00:00Z')).toBe('October 23, 2015');
+    expect(getReleaseDate('')).toBe('Invalid Date');
 });
 
 describe('check async func for requests', () => {

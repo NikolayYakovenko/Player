@@ -220,7 +220,7 @@ export class ReactPlayer extends React.Component {
         const sound = playlist[index].howl;
 
         // Pause the sound.
-        sound.pause();
+        if (sound) sound.pause();
     }
 
     /**

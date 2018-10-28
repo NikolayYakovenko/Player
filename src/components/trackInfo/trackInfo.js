@@ -17,11 +17,13 @@ import './trackInfo.css';
 export class TrackInfo extends React.Component {
     static propTypes = {
         loadTracks: PropTypes.func,
+        loadTracksByAlbum: PropTypes.func,
         updateCurrentTrack: PropTypes.func,
         fetching: PropTypes.bool.isRequired,
         tracks: PropTypes.array.isRequired,
         errorMessage: PropTypes.string,
         match: PropTypes.object,
+        history: PropTypes.object,
     };
 
     componentDidMount() {
@@ -58,6 +60,17 @@ export class TrackInfo extends React.Component {
         return null;
     }
 
+    searchTrackByAlbum = () => {
+        const { loadTracksByAlbum, history } = this.props;
+        const trackId = this.getTrackId();
+        const track = this.getTrackById(trackId);
+
+        loadTracksByAlbum(track.collectionId).then(
+            () => history.push('/'),
+            (error) => { throw new Error(error); },
+        );
+    };
+
     renderTrackInfo() {
         const trackId = this.getTrackId();
         const track = this.getTrackById(trackId);
@@ -84,7 +97,13 @@ export class TrackInfo extends React.Component {
                     </div>
                     <div className='trackDetails'>
                         <b>Album: </b>
-                        {track.collectionName}
+                        <button
+                            className='allAlbumSongButton'
+                            onClick={this.searchTrackByAlbum}
+                            title='See all songs from this album'
+                        >
+                            {track.collectionName}
+                        </button>
                     </div>
                     <div className='trackDetails'>
                         <b>Duration: </b>

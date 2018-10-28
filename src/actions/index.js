@@ -56,13 +56,13 @@ export const searchTracks = url => async (dispatch) => {
 export const loadTracks = value => async (dispatch) => {
     const url = `${API_SEARCH}?term=${value}`;
 
-    dispatch(searchTracks(url));
+    await dispatch(searchTracks(url));
 };
 
 export const loadTracksByAlbum = albumId => async (dispatch) => {
     const url = `${API_LOOKUP}?id=${albumId}`;
 
-    dispatch(searchTracks(url));
+    await dispatch(searchTracks(url));
 };
 
 export const makeSort = (field) => {

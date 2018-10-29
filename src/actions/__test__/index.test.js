@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import configureMockStore from 'redux-mock-store';
 import { Howler } from 'howler';
 
-import { API_SEARCH } from '../../config/api';
+import { API_SEARCH, API_LOOKUP } from '../../config/api';
 
 import {
     createPlaylist,
@@ -111,16 +111,69 @@ describe('Test async actions to search tracks', () => {
         });
     });
 
-    test('should call loadTracks action', async () => {
-        const dispatch = jest.fn();
+    test('should call loadTracks action', () => {
+        const store = mockStore({ tracks: [] });
+        const expectedActions = [
+            { type: LOAD_TRACKS_START },
+            {
+                type: LOAD_TRACKS_SUCCESS,
+                data: {
+                    results: [1, 2],
+                    resultCount: 2,
+                },
+            },
+            { type: CREATE_PLAYLIST, tracks: [1, 2] },
+        ];
 
-        expect(await loadTracks('adele')(dispatch)).toBe(undefined);
+        fetchMock.get(url, {
+            body: { results: [1, 2], resultCount: 2 },
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+        });
+
+        store.dispatch(loadTracks('adele'))
+            .then((result) => {
+                expect.assertions(2);
+                expect(result).toBeUndefined();
+                expect(store.getActions()).toEqual(expectedActions);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     });
 
-    test('should call loadTracksByAlbum action', async () => {
-        const dispatch = jest.fn();
 
-        expect(await loadTracksByAlbum('adele')(dispatch)).toBe(undefined);
+    test('should call loadTracksByAlbum action', () => {
+        const store = mockStore({ tracks: [] });
+        const tracks = ['a', 'l', 'b', 'u', 'm'];
+        const lookupUrl = `${API_LOOKUP}?id=123456`;
+        const expectedActions = [
+            { type: LOAD_TRACKS_START },
+            {
+                type: LOAD_TRACKS_SUCCESS,
+                data: {
+                    results: tracks,
+                    resultCount: tracks.length,
+                },
+            },
+            { type: CREATE_PLAYLIST, tracks },
+        ];
+
+        fetchMock.get(lookupUrl, {
+            body: { results: tracks, resultCount: tracks.length },
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+        });
+
+        store.dispatch(loadTracksByAlbum(123456))
+            .then((result) => {
+                expect.assertions(2);
+                expect(result).toBeUndefined();
+                expect(store.getActions()).toEqual(expectedActions);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     });
 });
 

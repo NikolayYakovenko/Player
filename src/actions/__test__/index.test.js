@@ -133,13 +133,15 @@ describe('Test async actions to search tracks', () => {
 
         store.dispatch(loadTracks('adele'))
             .then((result) => {
-                expect.assertions(2);
+                expect.assertions(3);
                 expect(result).toBeUndefined();
                 expect(store.getActions()).toEqual(expectedActions);
             })
             .catch((error) => {
                 console.error(error);
             });
+
+        expect(fetchMock.lastUrl()).toBe(url);
     });
 
 
@@ -167,13 +169,15 @@ describe('Test async actions to search tracks', () => {
 
         store.dispatch(loadTracksByAlbum(123456))
             .then((result) => {
-                expect.assertions(2);
+                expect.assertions(3);
                 expect(result).toBeUndefined();
                 expect(store.getActions()).toEqual(expectedActions);
             })
             .catch((error) => {
                 console.error(error);
             });
+
+        expect(fetchMock.lastUrl()).toBe(lookupUrl);
     });
 });
 

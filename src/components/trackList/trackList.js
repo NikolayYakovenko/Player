@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Track } from '../track/track';
+import { AlbumCover } from '../albumCover/albumCover';
 
 import { Input } from '../ui/input/input';
 import { Spinner } from '../ui/spinner/spinner';
@@ -15,6 +16,7 @@ const ENTER_KEY = 13;
 export class TrackList extends React.Component {
     static propTypes = {
         loadTracks: PropTypes.func.isRequired,
+        loadTracksByAlbum: PropTypes.func.isRequired,
         makeSort: PropTypes.func.isRequired,
         tracks: PropTypes.array,
         fetching: PropTypes.bool,
@@ -27,6 +29,7 @@ export class TrackList extends React.Component {
     };
 
     componentDidMount() {
+        window.scrollTo(0, 0);
         this.searchInput.addEventListener('keyup', event => this.makeSearch(event));
     }
 
@@ -49,17 +52,31 @@ export class TrackList extends React.Component {
         });
     }
 
+    renderAlbumCover() {
+        const { tracks } = this.props;
+        const cover = tracks.filter(track => track.wrapperType === 'collection');
+
+        if (cover.length) {
+            return (
+                <AlbumCover trackInfo={cover[0]} />
+            );
+        }
+        return null;
+    }
+
     renderList() {
         const {
             tracks,
             count,
             makeSort,
             errorMessage,
+            loadTracksByAlbum,
         } = this.props;
 
         if (count) {
             return (
                 <ul>
+                    {this.renderAlbumCover()}
                     <li className='listHeader' key='listHeader'>
                         <div className='trackItem'>
                             <b className='headerTitle'>Title</b>
@@ -88,7 +105,16 @@ export class TrackList extends React.Component {
                         </div>
                     </li>
                     {tracks.map((track) => {
-                        return <Track key={track.trackId} trackInfo={track} />;
+                        if (track.wrapperType !== 'collection') {
+                            return (
+                                <Track
+                                    key={track.trackId}
+                                    trackInfo={track}
+                                    loadTracksByAlbum={loadTracksByAlbum}
+                                />
+                            );
+                        }
+                        return null;
                     })}
                 </ul>
             );

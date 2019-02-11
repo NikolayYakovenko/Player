@@ -10,11 +10,12 @@ module.exports = (env, argv) => {
     const isDevMode = argv.mode !== 'production';
     const config = {
         entry: {
-            main: './src/index.js',
+            'js/main': './src/index.js',
         },
         output: {
             path: path.resolve(__dirname, 'dist'),
-            filename: isDevMode ? '[name].js' : '[name].[contenthash:6].js',
+            filename: isDevMode ? '[name].js' : '[name]_[contenthash:6].js',
+            chunkFilename: isDevMode ? 'js/[name].js' : 'js/[name]_[contenthash:6].js',
             publicPath: '/',
         },
         module: {
@@ -35,6 +36,18 @@ module.exports = (env, argv) => {
                     test: /\.svg$/,
                     loader: 'svg-sprite-loader',
                 },
+                {
+                    test: /\.(png|jpg|gif)$/,
+                    use: [
+                        {
+                            loader: 'file-loader',
+                            options: {
+                                name: isDevMode ? '[name].[ext]' : '[name]_[hash:6].[ext]',
+                                outputPath: 'images/',
+                            },
+                        },
+                    ],
+                },
             ],
         },
         plugins: [
@@ -50,7 +63,7 @@ module.exports = (env, argv) => {
             new webpack.HashedModuleIdsPlugin(),
         ],
         optimization: {
-            runtimeChunk: 'single',
+            // runtimeChunk: 'single',
             splitChunks: {
                 cacheGroups: {
                     commons: {

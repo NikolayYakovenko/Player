@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import jam from './jam.jpg';
 import './notFoundRoute.css';
 
 
@@ -12,6 +13,13 @@ export const NotFoundRoute = () => {
             <Link to='/'>
                 Go to the main page
             </Link>
+            <div>
+                <img
+                    className='notFoundImage'
+                    src={jam}
+                    alt='jam'
+                />
+            </div>
         </div>
     );
 };

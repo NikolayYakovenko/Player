@@ -25,5 +25,5 @@ npm run build
 
 ##### Build JS bundle in development mode with watcher:
 ```
-npm run build-dev
+npm run dev
 ```

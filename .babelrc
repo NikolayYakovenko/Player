@@ -1,22 +1,35 @@
 {
     "presets": [
-        ["env", { "modules": false }],
-        "react",
-        "stage-1"
+        [
+            "@babel/preset-env",
+            {
+                "targets": {
+                    "browsers": [
+                        "last 2 versions"
+                    ]
+                },
+                "useBuiltIns": "usage",
+                "modules": false,
+                "corejs": "3"
+            }
+        ],
+
+        "@babel/preset-react"
     ],
     "plugins": [
-        "transform-es2015-modules-commonjs",
-        "syntax-trailing-function-commas",
-        "transform-async-to-generator"
+        "@babel/plugin-transform-modules-commonjs",
+        "@babel/plugin-transform-async-to-generator",
+        "@babel/plugin-proposal-class-properties"
     ],
     "env": {
         "test": {
             "presets": [
-                "env",
-                "react"
+                "@babel/preset-env",
+                "@babel/preset-react"
             ],
             "plugins": [
-                ["transform-class-properties", { "spec": true }]
+                ["@babel/plugin-proposal-class-properties", { "spec": true }],
+                ["@babel/plugin-transform-runtime", { "regenerator": true }]
             ]
         }
     }

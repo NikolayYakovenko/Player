@@ -16,7 +16,7 @@ export const PlayButton = (props) => {
         updateCurrentTrack,
         disabled,
     } = props;
-    const selected = playlist.find(track => track.id === id);
+    const selected = playlist.find((track) => track.id === id);
     const isPlaying = selected && selected.isPlaying;
 
     const buttonAction = () => {

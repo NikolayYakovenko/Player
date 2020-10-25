@@ -44,7 +44,7 @@ const playerReducer = (state = DEFAULT_STATE, action) => {
             const listOfTracks = [];
 
             tracks
-                .filter(track => track.wrapperType === 'track')
+                .filter((track) => track.wrapperType === 'track')
                 .forEach((track) => {
                     listOfTracks.push({
                         title: track.trackName,
@@ -91,7 +91,8 @@ const playerReducer = (state = DEFAULT_STATE, action) => {
                         isPlaying: true,
 
                     };
-                } else if (track.isPlaying) {
+                }
+                if (track.isPlaying) {
                     // update isPlaying property for previous track
                     return {
                         ...track,

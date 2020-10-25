@@ -107,7 +107,8 @@ describe('check sort func for array', () => {
         ];
 
         expect(
-            sortList(array, 'trackTimeMillis', true))
+            sortList(array, 'trackTimeMillis', true),
+        )
             .toMatchObject(sortedByTime);
     });
 
@@ -154,7 +155,8 @@ describe('check sort func for array', () => {
         ];
 
         expect(
-            sortList(array, 'trackPrice', false))
+            sortList(array, 'trackPrice', false),
+        )
             .toMatchObject(sortedByPrice);
     });
 
@@ -202,7 +204,8 @@ describe('check sort func for array', () => {
         ];
 
         expect(
-            sortList(array, 'primaryGenreName', true))
+            sortList(array, 'primaryGenreName', true),
+        )
             .toMatchObject(sortedByGenre);
     });
 
@@ -250,7 +253,8 @@ describe('check sort func for array', () => {
         ];
 
         expect(
-            sortList(array, 'primaryGenreName', false))
+            sortList(array, 'primaryGenreName', false),
+        )
             .toMatchObject(sortedByGenre);
     });
 });

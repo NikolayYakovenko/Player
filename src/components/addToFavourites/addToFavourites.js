@@ -9,18 +9,20 @@ import './addToFavourites.css';
 
 
 export const AddToFavourites = (props) => {
-    const isTrackInFav = props.active.includes(props.track.trackId);
+    const {
+        active, track, removeFromFavourites, addToFavourites,
+    } = props;
+    const isTrackInFav = active.includes(track.trackId);
 
-    const titleAttr = isTrackInFav ?
-        'Remove track from favourites'
-        :
-        'Add track to favourites';
+    const titleAttr = isTrackInFav
+        ? 'Remove track from favourites'
+        : 'Add track to favourites';
 
     const action = () => {
         if (isTrackInFav) {
-            props.removeFromFavourites(props.track);
+            removeFromFavourites(track);
         } else {
-            props.addToFavourites(props.track);
+            addToFavourites(track);
         }
     };
 

@@ -37,40 +37,54 @@ export const Track = (props) => {
                     <h3>{trackInfo.trackName}</h3>
                 </Link>
                 <div className='trackDetails'>
-                    <b>Artist</b>: {trackInfo.artistName}
+                    <b>Artist</b>
+                    :
+                    {trackInfo.artistName}
                 </div>
-                {trackInfo.collectionName ?
-                    <div className='trackDetails'>
-                        <b>Album</b>:
-                        <button
-                            className='allAlbumSongButton'
-                            onClick={searchTrackByAlbum}
-                            title='See all songs from this album'
-                        >
-                            {trackInfo.collectionName}
-                        </button>
-                    </div>
-                    : null
-                }
+                {trackInfo.collectionName
+                    ? (
+                        <div className='trackDetails'>
+                            <b>Album</b>
+                            :
+                            <button
+                                className='allAlbumSongButton'
+                                onClick={searchTrackByAlbum}
+                                title='See all songs from this album'
+                                type='button'
+                            >
+                                {trackInfo.collectionName}
+                            </button>
+                        </div>
+                    )
+                    : null}
                 <div className='trackDetails'>
-                    <b>Release date</b>: {getReleaseDate(trackInfo.releaseDate)}
+                    <b>Release date</b>
+                    :
+                    {getReleaseDate(trackInfo.releaseDate)}
                 </div>
 
                 <div className='trackDetails trackDetailsShowOnSmall'>
-                    <b>Genre</b>: {trackInfo.primaryGenreName}
+                    <b>Genre</b>
+                    :
+                    {trackInfo.primaryGenreName}
                 </div>
                 <div className='trackDetails trackDetailsShowOnSmall'>
-                    <b>Duration</b>: {getTrackDuration(trackInfo.trackTimeMillis)}
+                    <b>Duration</b>
+                    :
+                    {getTrackDuration(trackInfo.trackTimeMillis)}
                 </div>
                 <div className='trackDetails trackDetailsShowOnSmall'>
-                    <b>Price</b>:&nbsp;
-                    {trackInfo.trackPrice > 0 ?
-                        <span>
-                            <b>{trackInfo.trackPrice}</b> {trackInfo.currency}
-                        </span>
-                        :
-                        <b>Free</b>
-                    }
+                    <b>Price</b>
+                    :&nbsp;
+                    {trackInfo.trackPrice > 0
+                        ? (
+                            <span>
+                                <b>{trackInfo.trackPrice}</b>
+                                {' '}
+                                {trackInfo.currency}
+                            </span>
+                        )
+                        : <b>Free</b>}
                 </div>
             </div>
             <div className='itemSmall itemHideOnSmall'>
@@ -80,13 +94,15 @@ export const Track = (props) => {
                 {getTrackDuration(trackInfo.trackTimeMillis)}
             </div>
             <div className='itemSmall itemHideOnSmall'>
-                {trackInfo.trackPrice > 0 ?
-                    <span>
-                        <b>{trackInfo.trackPrice}</b> {trackInfo.currency}
-                    </span>
-                    :
-                    <b>Free</b>
-                }
+                {trackInfo.trackPrice > 0
+                    ? (
+                        <span>
+                            <b>{trackInfo.trackPrice}</b>
+                            {' '}
+                            {trackInfo.currency}
+                        </span>
+                    )
+                    : <b>Free</b>}
             </div>
         </li>
     );

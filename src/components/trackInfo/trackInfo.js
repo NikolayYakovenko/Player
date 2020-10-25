@@ -15,17 +15,6 @@ import './trackInfo.css';
 
 
 export class TrackInfo extends React.Component {
-    static propTypes = {
-        loadTracks: PropTypes.func,
-        loadTracksByAlbum: PropTypes.func,
-        updateCurrentTrack: PropTypes.func,
-        fetching: PropTypes.bool.isRequired,
-        tracks: PropTypes.array.isRequired,
-        errorMessage: PropTypes.string,
-        match: PropTypes.object,
-        history: PropTypes.object,
-    };
-
     componentDidMount() {
         window.scrollTo(0, 0);
 
@@ -45,14 +34,15 @@ export class TrackInfo extends React.Component {
     }
 
     getTrackId() {
-        return this.props.match.params.id;
+        const { match: { params } } = this.props;
+        return params.id;
     }
 
     getTrackById(id) {
         const { tracks } = this.props;
 
         if (tracks && tracks.length) {
-            const track = tracks.filter(item => item.trackId === id.toString());
+            const track = tracks.filter((item) => item.trackId === id.toString());
 
             return track[0];
         }
@@ -76,85 +66,95 @@ export class TrackInfo extends React.Component {
         const track = this.getTrackById(trackId);
 
         return (
-            track ?
-                <React.Fragment>
-                    <div className='backLink'>
-                        <Link to='/'>Back to the search</Link>
-                    </div>
-                    <div className='mainInfo'>
-                        <div className='logoWrapper'>
-                            <img
-                                className='trackLogo'
-                                src={track.artworkUrl60}
-                                alt={track.trackName}
-                            />
+            track
+                ? (
+                    <>
+                        <div className='backLink'>
+                            <Link to='/'>Back to the search</Link>
                         </div>
-                        <h2 className='trackName'>{track.trackName}</h2>
-                    </div>
-                    <div className='trackDetails'>
-                        <b>Artist: </b>
-                        {track.artistName}
-                    </div>
-                    <div className='trackDetails'>
-                        <b>Album: </b>
-                        <button
-                            className='allAlbumSongButton'
-                            onClick={this.searchTrackByAlbum}
-                            title='See all songs from this album'
-                        >
-                            {track.collectionName}
-                        </button>
-                    </div>
-                    <div className='trackDetails'>
-                        <b>Duration: </b>
-                        {getTrackDuration(track.trackTimeMillis)}
-                    </div>
-                    <div className='trackDetails'>
-                        <b>Price: </b>
-                        {track.trackPrice > 0 ?
-                            <span>
-                                <b>{track.trackPrice} </b>{track.currency}
-                            </span>
-                            :
-                            <span>Free</span>
-                        }
-                    </div>
-                    <TwitterShare
-                        text={`${track.artistName}: ${track.trackName} `}
-                        hashtags={`${track.artistName},theBestMusicPlayer`}
-                    />
-
-                    {/* won't work with localhost */}
-                    <FacebookShare
-                        url='{window.location.href}'
-                    />
-
-                    <div className='controlsWrapper'>
-                        {track.trackPrice > 0 &&
-                            <button className='controlButton buyTrackButton'>
-                                Buy this track
+                        <div className='mainInfo'>
+                            <div className='logoWrapper'>
+                                <img
+                                    className='trackLogo'
+                                    src={track.artworkUrl60}
+                                    alt={track.trackName}
+                                />
+                            </div>
+                            <h2 className='trackName'>{track.trackName}</h2>
+                        </div>
+                        <div className='trackDetails'>
+                            <b>Artist: </b>
+                            {track.artistName}
+                        </div>
+                        <div className='trackDetails'>
+                            <b>Album: </b>
+                            <button
+                                className='allAlbumSongButton'
+                                onClick={this.searchTrackByAlbum}
+                                title='See all songs from this album'
+                                type='button'
+                            >
+                                {track.collectionName}
                             </button>
-                        }
-                        <div className='controlButton'>
-                            <AddToFavouritesContainer track={track} />
                         </div>
-                        <div className='controlButton'>
-                            <PlayButtonContainer id={track.trackId} />
+                        <div className='trackDetails'>
+                            <b>Duration: </b>
+                            {getTrackDuration(track.trackTimeMillis)}
                         </div>
-                    </div>
+                        <div className='trackDetails'>
+                            <b>Price: </b>
+                            {track.trackPrice > 0
+                                ? (
+                                    <span>
+                                        <b>
+                                            {track.trackPrice}
+                                            {' '}
+                                        </b>
+                                        {track.currency}
+                                    </span>
+                                )
+                                : <span>Free</span>}
+                        </div>
+                        <TwitterShare
+                            text={`${track.artistName}: ${track.trackName} `}
+                            hashtags={`${track.artistName},theBestMusicPlayer`}
+                        />
 
-                    <div id='fb-root' />
-                </React.Fragment>
-                :
-                this.noTrackFound()
+                        {/* won't work with localhost */}
+                        <FacebookShare
+                            url='{window.location.href}'
+                        />
+
+                        <div className='controlsWrapper'>
+                            {track.trackPrice > 0
+                            && (
+                                <button className='controlButton buyTrackButton' type='button'>
+                                    Buy this track
+                                </button>
+                            )}
+                            <div className='controlButton'>
+                                <AddToFavouritesContainer track={track} />
+                            </div>
+                            <div className='controlButton'>
+                                <PlayButtonContainer id={track.trackId} />
+                            </div>
+                        </div>
+
+                        <div id='fb-root' />
+                    </>
+                )
+                : this.noTrackFound()
         );
     }
 
     noTrackFound() {
+        const { match: { params } } = this.props;
         return (
             <div className='noTrackFound'>
                 <h3>
-                    There is no track with id <b>{this.props.match.params.id}</b>
+                    There is no track with id
+                    {' '}
+                    <b>{params.id}</b>
                 </h3>
                 <Link to='/'>
                     Go to the main page
@@ -164,15 +164,17 @@ export class TrackInfo extends React.Component {
     }
 
     render() {
-        if (this.props.fetching) {
+        const { fetching, errorMessage } = this.props;
+
+        if (fetching) {
             return (
                 <div className='spinnerWrapper'>
                     <Spinner />
                 </div>
             );
-        } else if (this.props.errorMessage) {
+        } if (errorMessage) {
             return (
-                this.props.errorMessage
+                errorMessage
             );
         }
         return (
@@ -181,3 +183,13 @@ export class TrackInfo extends React.Component {
     }
 }
 
+TrackInfo.propTypes = {
+    loadTracks: PropTypes.func,
+    loadTracksByAlbum: PropTypes.func,
+    updateCurrentTrack: PropTypes.func,
+    fetching: PropTypes.bool.isRequired,
+    tracks: PropTypes.array.isRequired,
+    errorMessage: PropTypes.string,
+    match: PropTypes.object,
+    history: PropTypes.object,
+};

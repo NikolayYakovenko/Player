@@ -5,16 +5,6 @@ import './shareButtons.css';
 
 
 export class TwitterShare extends React.Component {
-    static propTypes = {
-        text: PropTypes.string,
-        hashtags: PropTypes.string,
-    }
-
-    static defaultProps = {
-        text: '',
-        hashtags: '',
-    }
-
     componentDidMount() {
         window.twttr = this.loadTwitterScript(document, 'script', 'twitter-wjs');
     }
@@ -40,10 +30,11 @@ export class TwitterShare extends React.Component {
     createURL() {
         const url = 'https://twitter.com/intent/tweet';
         const searchParams = new URLSearchParams();
-        searchParams.set('text', this.props.text);
+        const { text, hashtags } = this.props;
+        searchParams.set('text', text);
 
-        if (this.props.hashtags.length) {
-            searchParams.set('hashtags', this.props.hashtags.replace(' ', ''));
+        if (hashtags.length) {
+            searchParams.set('hashtags', hashtags.replace(' ', ''));
         }
 
         return `${url}?${searchParams.toString()}`;
@@ -64,3 +55,13 @@ export class TwitterShare extends React.Component {
         );
     }
 }
+
+TwitterShare.propTypes = {
+    text: PropTypes.string,
+    hashtags: PropTypes.string,
+};
+
+TwitterShare.defaultProps = {
+    text: '',
+    hashtags: '',
+};

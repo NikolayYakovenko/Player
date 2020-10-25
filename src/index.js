@@ -12,7 +12,6 @@ import { App } from './components/app';
 import applicationReducers from './reducers';
 
 
-
 // /* eslint-disable no-underscore-dangle */
 const composeEnhancers = process.env.NODE_ENV !== 'production'
     && typeof window === 'object'

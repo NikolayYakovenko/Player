@@ -11,7 +11,8 @@
     "build": "webpack --progress --mode=production",
     "dev": "webpack -w --progress --mode=development --env reload=true",
     "analyze": "webpack -w --progress --mode=development --env analyze=true",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false NODE_ENV=production webpack --mode=production"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false NODE_ENV=production webpack --mode=production",
+    "eslint": "eslint src/ --fix"
   },
   "author": "Mykola Yakovenko",
   "license": "ISC",

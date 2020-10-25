@@ -24,7 +24,7 @@ export class ReactPlayer extends React.Component {
         changeVolume: PropTypes.func,
         playlist: PropTypes.array,
         volumeValue: PropTypes.number,
-        selectedTrackId: PropTypes.string,
+        selectedTrackId: PropTypes.number,
         currentTrack: PropTypes.object,
         isPlaying: PropTypes.bool,
     };

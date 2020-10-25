@@ -9,10 +9,11 @@ import { Navigation } from '../ui/navigation/navigation';
 export class FavList extends React.Component {
     static propTypes = {
         favourites: PropTypes.array,
+        loadTracksByAlbum: PropTypes.func,
     }
 
     renderList() {
-        const { favourites } = this.props;
+        const { favourites, loadTracksByAlbum } = this.props;
         return (
             favourites && favourites.length ?
                 <ul>
@@ -40,7 +41,7 @@ export class FavList extends React.Component {
                         </div>
                     </li>
                     {favourites.map((track) => {
-                        return <Track key={track.trackId} trackInfo={track} />;
+                        return <Track key={track.trackId} trackInfo={track} loadTracksByAlbum={loadTracksByAlbum} />;
                     })}
                 </ul>
                 :

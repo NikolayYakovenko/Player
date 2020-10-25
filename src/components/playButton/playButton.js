@@ -48,7 +48,7 @@ PlayButton.propTypes = {
     pauseTrack: PropTypes.func,
     runTrack: PropTypes.func,
     updateCurrentTrack: PropTypes.func,
-    id: PropTypes.string,
+    id: PropTypes.number,
     playlist: PropTypes.array,
     disabled: PropTypes.bool,
 };

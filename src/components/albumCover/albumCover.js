@@ -20,16 +20,26 @@ export const AlbumCover = (props) => {
             />
             <div className='albumCoverInfo'>
                 <div className='trackDetails'>
-                    <b>Release date</b>: {getReleaseDate(trackInfo.releaseDate)}
+                    <b>Release date</b>
+                    :
+                    {getReleaseDate(trackInfo.releaseDate)}
                 </div>
                 <div className='trackDetails'>
-                    <b>Tracks count</b>: {trackInfo.trackCount}
+                    <b>Tracks count</b>
+                    :
+                    {trackInfo.trackCount}
                 </div>
                 <div className='trackDetails'>
-                    <b>Genre</b>: {trackInfo.primaryGenreName}
+                    <b>Genre</b>
+                    :
+                    {trackInfo.primaryGenreName}
                 </div>
                 <div className='trackDetails'>
-                    <b>Collection price</b>: {trackInfo.collectionPrice} {trackInfo.currency}
+                    <b>Collection price</b>
+                    :
+                    {trackInfo.collectionPrice}
+                    {' '}
+                    {trackInfo.currency}
                 </div>
             </div>
         </li>

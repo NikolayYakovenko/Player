@@ -28,7 +28,7 @@ export const createPlaylist = (tracks) => {
     };
 };
 
-export const searchTracks = url => async (dispatch) => {
+export const searchTracks = (url) => async (dispatch) => {
     dispatch({
         type: LOAD_TRACKS_START,
     });
@@ -53,13 +53,13 @@ export const searchTracks = url => async (dispatch) => {
     }
 };
 
-export const loadTracks = value => async (dispatch) => {
+export const loadTracks = (value) => async (dispatch) => {
     const url = `${API_SEARCH}?term=${value}`;
 
     await dispatch(searchTracks(url));
 };
 
-export const loadTracksByAlbum = albumId => async (dispatch) => {
+export const loadTracksByAlbum = (albumId) => async (dispatch) => {
     const url = `${API_LOOKUP}?id=${albumId}`;
 
     await dispatch(searchTracks(url));

@@ -5,14 +5,6 @@ import './shareButtons.css';
 
 
 export class FacebookShare extends React.Component {
-    static propTypes = {
-        url: PropTypes.string,
-    }
-
-    static defaultProps = {
-        url: '',
-    }
-
     componentDidMount() {
         window.fbAsyncInit = this.loadFacebookScript(document, 'script', 'facebook-jssdk');
     }
@@ -31,21 +23,23 @@ export class FacebookShare extends React.Component {
 
     createURL() {
         /* won't work with localhost */
-        const url = 'https://www.facebook.com/sharer/sharer.php';
+        const { url } = this.props;
         const searchParams = new URLSearchParams();
-        searchParams.set('u', this.props.url);
+        searchParams.set('u', url);
         searchParams.set('src', 'sdkpreparse');
 
-        return `${url}?${searchParams.toString()}`;
+        return `https://www.facebook.com/sharer/sharer.php?${searchParams.toString()}`;
     }
 
 
     render() {
+        const { url } = this.props;
+
         return (
             <div className='shareButton'>
                 <div
                     className='fb-share-button'
-                    data-href={this.props.url}
+                    data-href={url}
                     data-layout='button'
                     data-size='large'
                     data-mobile-iframe='true'
@@ -63,3 +57,11 @@ export class FacebookShare extends React.Component {
         );
     }
 }
+
+FacebookShare.propTypes = {
+    url: PropTypes.string,
+};
+
+FacebookShare.defaultProps = {
+    url: '',
+};

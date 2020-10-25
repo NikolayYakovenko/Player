@@ -15,7 +15,7 @@ import { NotFoundRoute } from './ui/notFoundRoute/notFoundRoute';
 
 export const App = () => {
     return (
-        <BrowserRouter >
+        <BrowserRouter>
             <Home>
                 <PlayerContainer />
                 <Switch>

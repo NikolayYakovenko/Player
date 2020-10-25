@@ -14,39 +14,34 @@ const ENTER_KEY = 13;
 
 
 export class TrackList extends React.Component {
-    static propTypes = {
-        loadTracks: PropTypes.func.isRequired,
-        loadTracksByAlbum: PropTypes.func.isRequired,
-        makeSort: PropTypes.func.isRequired,
-        tracks: PropTypes.array,
-        fetching: PropTypes.bool,
-        count: PropTypes.number,
-        errorMessage: PropTypes.string,
-    }
+    constructor(props) {
+        super(props);
 
-    state = {
-        searchValue: '',
-    };
+        this.state = {
+            searchValue: '',
+        };
+    }
 
     componentDidMount() {
         window.scrollTo(0, 0);
-        this.searchInput.addEventListener('keyup', event => this.makeSearch(event));
+        this.searchInput.addEventListener('keyup', (event) => this.makeSearch(event));
     }
 
     componentWillUnmount() {
-        this.searchInput.removeEventListener('keyup', event => this.makeSearch(event));
+        this.searchInput.removeEventListener('keyup', (event) => this.makeSearch(event));
     }
 
     makeSearch = (event) => {
         const { searchValue } = this.state;
+        const { loadTracks } = this.props;
         const searchNotEmpty = searchValue.length > 0;
 
         if (event.keyCode === ENTER_KEY && searchNotEmpty) {
-            this.props.loadTracks(searchValue);
+            loadTracks(searchValue);
         }
     }
 
-    onSearchValueChange(event) {
+    onSearchValueChange = (event) => {
         this.setState({
             searchValue: event.target.value,
         });
@@ -54,7 +49,7 @@ export class TrackList extends React.Component {
 
     renderAlbumCover() {
         const { tracks } = this.props;
-        const cover = tracks.filter(track => track.wrapperType === 'collection');
+        const cover = tracks.filter((track) => track.wrapperType === 'collection');
 
         if (cover.length) {
             return (
@@ -118,7 +113,7 @@ export class TrackList extends React.Component {
                     })}
                 </ul>
             );
-        } else if (errorMessage) {
+        } if (errorMessage) {
             return (
                 <div className='noResults'>{errorMessage}</div>
             );
@@ -131,25 +126,36 @@ export class TrackList extends React.Component {
 
     render() {
         const { fetching } = this.props;
+        const { searchValue } = this.state;
 
         return (
-            <React.Fragment>
+            <>
                 <Navigation />
                 <Input
                     refFn={(input) => { this.searchInput = input; }}
                     className='searchFieldWrapper'
-                    value={this.state.searchValue}
-                    onChange={event => this.onSearchValueChange(event)}
+                    value={searchValue}
+                    onChange={this.onSearchValueChange}
                     placeholder='Enter song or artist'
                 />
-                {fetching ?
-                    <div className='spinnerWrapper'>
-                        <Spinner />
-                    </div>
-                    :
-                    this.renderList()
-                }
-            </React.Fragment>
+                {fetching
+                    ? (
+                        <div className='spinnerWrapper'>
+                            <Spinner />
+                        </div>
+                    )
+                    : this.renderList()}
+            </>
         );
     }
 }
+
+TrackList.propTypes = {
+    loadTracks: PropTypes.func.isRequired,
+    loadTracksByAlbum: PropTypes.func.isRequired,
+    makeSort: PropTypes.func.isRequired,
+    tracks: PropTypes.array,
+    fetching: PropTypes.bool,
+    count: PropTypes.number,
+    errorMessage: PropTypes.string,
+};

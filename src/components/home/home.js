@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import './home.css';
 
 
-export const Home = (props) => {
+export const Home = ({ children }) => {
     return (
         <div className='wrapper'>
-            {props.children}
+            {children}
         </div>
     );
 };

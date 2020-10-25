@@ -17,18 +17,6 @@ import './player.css';
 
 
 export class ReactPlayer extends React.Component {
-    static propTypes = {
-        pauseTrack: PropTypes.func,
-        updateCurrentTrack: PropTypes.func,
-        runTrack: PropTypes.func,
-        changeVolume: PropTypes.func,
-        playlist: PropTypes.array,
-        volumeValue: PropTypes.number,
-        selectedTrackId: PropTypes.number,
-        currentTrack: PropTypes.object,
-        isPlaying: PropTypes.bool,
-    };
-
     constructor(props) {
         super(props);
         this.playerTimerRef = React.createRef();
@@ -42,14 +30,15 @@ export class ReactPlayer extends React.Component {
         this.trackProgressEmptyRef = React.createRef();
         this.trackProgressControlRef = React.createRef();
         this.trackProgressRef = React.createRef();
+
+        this.state = {
+            duration: getTrackDuration(),
+            volumeControlVisible: false,
+        };
     }
 
-    state = {
-        duration: getTrackDuration(),
-        volumeControlVisible: false,
-    };
-
     componentDidMount() {
+        const { changeVolume } = this.props;
         const volumeSliderRef = this.volumeSliderRef.current;
         const volumeControlRef = this.volumeControlRef.current;
         const volumeBarEmptyRef = this.volumeBarEmptyRef.current;
@@ -61,7 +50,7 @@ export class ReactPlayer extends React.Component {
         // volume slider START
         volumeBarEmptyRef.addEventListener('click', (event) => {
             const per = event.layerX / parseFloat(volumeBarEmptyRef.scrollWidth);
-            this.props.changeVolume(per);
+            changeVolume(per);
         });
         volumeSliderRef.addEventListener('mousedown', () => {
             window.sliderDown = true;
@@ -134,11 +123,11 @@ export class ReactPlayer extends React.Component {
             this.play(newIndex);
         } else if (
             // check if user want to play the same track when pressed pause before
-            prevProps.isPlaying !== isPlaying &&
-            prevProps.selectedTrackId === selectedTrackId &&
-            selectedTrackId !== null
+            prevProps.isPlaying !== isPlaying
+            && prevProps.selectedTrackId === selectedTrackId
+            && selectedTrackId !== null
         ) {
-            const selected = playlist.find(track => track.id === selectedTrackId);
+            const selected = playlist.find((track) => track.id === selectedTrackId);
 
             if (selected.isPlaying) {
                 this.play(currentTrack.index);
@@ -153,6 +142,7 @@ export class ReactPlayer extends React.Component {
     }
 
     componentWillUnmount() {
+        const { pauseTrack } = this.props;
         const volumeControlRef = this.volumeControlRef.current;
         const trackProgressControlRef = this.trackProgressControlRef.current;
 
@@ -173,7 +163,7 @@ export class ReactPlayer extends React.Component {
             this.hideVolumeButtonOnOutsideClick(event);
         });
 
-        this.props.pauseTrack();
+        pauseTrack();
         Howler.unload();
     }
 
@@ -326,14 +316,16 @@ export class ReactPlayer extends React.Component {
         }
     }
 
-    toggleVolume() {
-        this.setState({
-            volumeControlVisible: !this.state.volumeControlVisible,
-        });
+    toggleVolume = () => {
+        this.setState((state) => ({
+            volumeControlVisible: !state.volumeControlVisible,
+        }));
     }
 
     hideVolume() {
-        if (this.state.volumeControlVisible) {
+        const { volumeControlVisible } = this.state;
+
+        if (volumeControlVisible) {
             this.setState({
                 volumeControlVisible: false,
             });
@@ -374,20 +366,23 @@ export class ReactPlayer extends React.Component {
     }
 
     hideVolumeButtonOnOutsideClick(event) {
+        const { volumeControlVisible } = this.state;
         const volumeBtn = this.volumeButtonRef.current;
         const volumeControl = this.volumeControlRef.current;
-        const volumeBtnVisible = this.state.volumeControlVisible && volumeBtn;
+        const volumeBtnVisible = volumeControlVisible && volumeBtn;
 
-        if (volumeBtnVisible &&
-            !volumeBtn.contains(event.target) &&
-            !volumeControl.contains(event.target)
+        if (volumeBtnVisible
+            && !volumeBtn.contains(event.target)
+            && !volumeControl.contains(event.target)
         ) {
             this.hideVolume();
         }
     }
 
     noTracksLoaded() {
-        return this.props.playlist.length === 0;
+        const { playlist } = this.props;
+
+        return playlist.length === 0;
     }
 
     prevButton() {
@@ -426,7 +421,7 @@ export class ReactPlayer extends React.Component {
         return (
             <button
                 className='playerButton playerButtonSmall'
-                onClick={() => this.toggleVolume()}
+                onClick={this.toggleVolume}
                 type='button'
                 ref={this.volumeButtonRef}
             >
@@ -457,6 +452,8 @@ export class ReactPlayer extends React.Component {
                     <button
                         ref={this.volumeSliderRef}
                         className='volumeSlider'
+                        type='button'
+                        aria-label='Volume bar'
                     />
                 </div>
                 <div
@@ -481,6 +478,8 @@ export class ReactPlayer extends React.Component {
                     <button
                         ref={this.trackProgressSliderRef}
                         className='volumeSlider'
+                        type='button'
+                        aria-label='Track progress'
                     />
                 </div>
                 <div
@@ -498,6 +497,7 @@ export class ReactPlayer extends React.Component {
             currentTrack: { title, index, id },
         } = this.props;
         let trackId = id;
+        const { duration } = this.state;
 
         // When user press play button for the first time
         // currentTrack is empty and trackId is null.
@@ -514,12 +514,11 @@ export class ReactPlayer extends React.Component {
                 <div className='trackInfoWrapper'>
                     <p ref={this.playerTimerRef}>{getTrackDuration()}</p>
                     <p className='trackInfoName'>
-                        {title ?
-                            <b>{`${index + 1}. ${title}`}</b>
-                            : null
-                        }
+                        {title
+                            ? <b>{`${index + 1}. ${title}`}</b>
+                            : null}
                     </p>
-                    <p>{this.state.duration}</p>
+                    <p>{duration}</p>
                 </div>
                 <div className='player'>
                     {this.prevButton()}
@@ -538,3 +537,15 @@ export class ReactPlayer extends React.Component {
         );
     }
 }
+
+ReactPlayer.propTypes = {
+    pauseTrack: PropTypes.func,
+    updateCurrentTrack: PropTypes.func,
+    runTrack: PropTypes.func,
+    changeVolume: PropTypes.func,
+    playlist: PropTypes.array,
+    volumeValue: PropTypes.number,
+    selectedTrackId: PropTypes.number,
+    currentTrack: PropTypes.object,
+    isPlaying: PropTypes.bool,
+};

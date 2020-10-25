@@ -5,16 +5,19 @@ import cs from 'classnames';
 import './input.css';
 
 
-export const Input = (props, ...restProps) => {
-    const classes = cs('input', props.className);
+export const Input = (props) => {
+    const {
+        className, refFn, placeholder, onChange,
+    } = props;
+
+    const classes = cs('input', className);
     return (
         <input
             className={classes}
             type='text'
-            ref={props.refFn}
-            onChange={props.onChange}
-            placeholder={props.placeholder}
-            {...restProps}
+            ref={refFn}
+            onChange={onChange}
+            placeholder={placeholder}
         />
     );
 };
